@@ -1,3 +1,15 @@
+# Sasank's Neovim configuration
+
+This was adapted from @jmbuhr's wonderful [kickstarter](https://github.com/jmbuhr/quarto-nvim-kickstarter).
+
+
+
+
+
+
+
+
+
 # Quarto Nvim Kickstarter
 
 Companion to <https://github.com/quarto-dev/quarto-nvim>.

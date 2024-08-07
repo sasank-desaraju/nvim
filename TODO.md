@@ -1,0 +1,5 @@
+- [ ] Get rid of those banners in noice.nvim.
+    - They just get in the way of the text there and they mess with switching windows because they are recognized as a little window or something.
+- [ ] What is luarocks?
+- [ ] Fix treesitter
+- [ ] I want this to work well on HPG as well. This means if there are things that can only be gotten through `apt` and not from source then I should not have them.
