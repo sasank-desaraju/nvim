@@ -1,4 +1,4 @@
-- [ ] Get rid of those banners in noice.nvim.
+- [X] Get rid of those banners in noice.nvim.
     - They just get in the way of the text there and they mess with switching windows because they are recognized as a little window or something.
 - [ ] What is luarocks?
 - [ ] Fix treesitter
