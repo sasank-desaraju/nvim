@@ -52,39 +52,39 @@ vim.opt.mousefocus = true
 --     ["*"] = paste_from_clipboard,
 --   },
 -- }
--- vim.g.clipboard = {
---   name = "tmux",
---   copy = {
---     ["+"] = "tmux load-buffer -",
---     ["*"] = "tmux load-buffer -",
---   },
---   paste = {
---     ["+"] = "tmux save-buffer -",
---     ["*"] = "tmux save-buffer -",
---   },
---   cache_enabled = true,
--- }
-
 vim.g.clipboard = {
-  name = "xsel",
+  name = 'tmux',
   copy = {
-    ["+"] = "xsel --clipboard --input",
-    ["*"] = "xsel --primary --input",
+    ['+'] = 'tmux load-buffer -',
+    ['*'] = 'tmux load-buffer -',
   },
   paste = {
-    ["+"] = "xsel --clipboard --output",
-    ["*"] = "xsel --primary --output",
+    ['+'] = 'tmux save-buffer -',
+    ['*'] = 'tmux save-buffer -',
   },
   cache_enabled = true,
 }
-vim.o.clipboard = "unnamedplus"
+
+-- vim.g.clipboard = {
+--   name = "xsel",
+--   copy = {
+--     ["+"] = "xsel --clipboard --input",
+--     ["*"] = "xsel --primary --input",
+--   },
+--   paste = {
+--     ["+"] = "xsel --clipboard --output",
+--     ["*"] = "xsel --primary --output",
+--   },
+--   cache_enabled = true,
+-- }
+vim.o.clipboard = 'unnamedplus'
 -- vim.opt.clipboard:append("unnamedplus") -- use system clipboard
 
 vim.opt.timeoutlen = 400 -- until which-key pops up
 vim.opt.updatetime = 250 -- for autocommands and hovers
 
 -- don't ask about existing swap files
-vim.opt.shortmess:append("A")
+vim.opt.shortmess:append 'A'
 
 -- mode is already in statusline
 vim.opt.showmode = false
