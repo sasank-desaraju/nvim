@@ -47,7 +47,7 @@ return {
 
   { -- Autoformat
     'stevearc/conform.nvim',
-    enabled = true,
+    enabled = false,
     config = function()
       require('conform').setup {
         notify_on_error = false,
