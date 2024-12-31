@@ -21,6 +21,7 @@ return {
 
   {
     'epwalsh/obsidian.nvim',
+    -- INFO: No vault on HPG
     enabled = false,
     lazy = false,
     ft = 'markdown',

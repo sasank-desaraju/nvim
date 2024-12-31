@@ -6,3 +6,8 @@
 - [ ] Obsidian integration
 - [ ] Have the HPG version as a separate branch? Idk, plugins like Obsidian crash unless they can point to a vault.
 - [ ] Fix the which-key format or something so it stops being so annoying
+
+Some problems with trying to use the same Nvim config on HPG and local:
+- Obsidian is looking for my vault in HPG. I have therefore disabled Obsidian.
+- The xsel clipboard does not work on HPG. I commented out xsel as before.
+- HPG doesn't have GLIBC>=2.29 which Nvim and Treesitter whines about it
