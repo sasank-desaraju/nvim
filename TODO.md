@@ -3,3 +3,6 @@
 - [ ] What is luarocks?
 - [ ] Fix treesitter
 - [ ] I want this to work well on HPG as well. This means if there are things that can only be gotten through `apt` and not from source then I should not have them.
+- [ ] Obsidian integration
+- [ ] Have the HPG version as a separate branch? Idk, plugins like Obsidian crash unless they can point to a vault.
+- [ ] Fix the which-key format or something so it stops being so annoying
