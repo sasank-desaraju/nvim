@@ -216,31 +216,31 @@ end
 --show up in the popup as well
 
 -- normal mode
-wk.register({
-  ['<c-LeftMouse>'] = { '<cmd>lua vim.lsp.buf.definition()<CR>', 'go to definition' },
-  ['<c-q>'] = { '<cmd>q<cr>', 'close buffer' },
-  ['<esc>'] = { '<cmd>noh<cr>', 'remove search highlight' },
-  ['n'] = { 'nzzzv', 'center search' },
-  ['gN'] = { 'Nzzzv', 'center search' },
-  ['gl'] = { '<c-]>', 'open help link' },
-  ['gf'] = { ':e <cfile><CR>', 'edit file' },
-  ['<m-i>'] = { insert_r_chunk, 'r code chunk' },
-  ['<cm-i>'] = { insert_py_chunk, 'python code chunk' },
-  ['<m-I>'] = { insert_py_chunk, 'python code chunk' },
-  [']q'] = { ':silent cnext<cr>', '[q]uickfix next' },
-  ['[q'] = { ':silent cprev<cr>', '[q]uickfix prev' },
-  ['z?'] = { ':setlocal spell!<cr>', 'toggle [z]pellcheck' },
-  ['zl'] = { ':Telescope spell_suggest<cr>', '[l]ist spelling suggestions' },
+wk.add({
+  { '<c-LeftMouse>', '<cmd>lua vim.lsp.buf.definition()<CR>', desc = 'go to definition' },
+  { '<c-q>', '<cmd>q<cr>', desc = 'close buffer' },
+  { '<esc>', '<cmd>noh<cr>', desc = 'remove search highlight' },
+  { 'n', 'nzzzv', desc = 'center search' },
+  { 'gN', 'Nzzzv', desc = 'center search' },
+  { 'gl', '<c-]>', desc = 'open help link' },
+  { 'gf', ':e <cfile><CR>', desc = 'edit file' },
+  { '<m-i>', insert_r_chunk, desc = 'r code chunk' },
+  { '<cm-i>', insert_py_chunk, desc = 'python code chunk' },
+  { '<m-I>', insert_py_chunk, desc = 'python code chunk' },
+  { ']q', ':silent cnext<cr>', desc = '[q]uickfix next' },
+  { '[q', ':silent cprev<cr>', desc = '[q]uickfix prev' },
+  { 'z?', ':setlocal spell!<cr>', desc = 'toggle [z]pellcheck' },
+  { 'zl', ':Telescope spell_suggest<cr>', '[l]ist spelling suggestions' },
 }, { mode = 'n', silent = true })
 
 -- visual mode
-wk.register({
-  ['<cr>'] = { send_region, 'run code region' },
-  ['<M-j>'] = { ":m'>+<cr>`<my`>mzgv`yo`z", 'move line down' },
-  ['<M-k>'] = { ":m'<-2<cr>`>my`<mzgv`yo`z", 'move line up' },
-  ['.'] = { ':norm .<cr>', 'repat last normal mode command' },
-  ['q'] = { ':norm @q<cr>', 'repat q macro' },
-  -- This interferes with using 'h' to move left when I'm selectring a block in visual mode, which I do quite frequently.
+wk.add({
+  { '<cr>', send_region, desc = 'run code region' },
+  { '<M-j>', ":m'>+<cr>`<my`>mzgv`yo`z", desc = 'move line down' },
+  { '<M-k>', ":m'<-2<cr>`>my`<mzgv`yo`z", desc = 'move line up' },
+  { '.', ':norm .<cr>', desc = 'repeat last normal mode command' },
+  { 'q', ':norm @q<cr>', desc = 'repeat q macro' },
+  -- This interferes with using 'h' to move left when I'm selecting a block in visual mode, which I do quite frequently.
   -- h = {
   --   name = "[h]unk",
   --   s = {
@@ -256,6 +256,12 @@ wk.register({
   --     "hunk [r]eset",
   --   },
   -- },
+}, { mode = 'v' })
+
+-- visual with <leader>
+wk.add({
+  ['<leader>p'] = { '"_dP', 'replace without overwriting reg' },
+  ['<leader>d'] = { '"_d', 'delete without overwriting reg' },
 }, { mode = 'v' })
 
 -- visual with <leader>
