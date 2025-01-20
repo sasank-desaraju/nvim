@@ -22,14 +22,14 @@ return {
   {
     'epwalsh/obsidian.nvim',
     -- INFO: No vault on HPG
-    enabled = false,
-    lazy = false,
+    enabled = true,
+    lazy = true,
     ft = 'markdown',
     event = {
       -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
       -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-      'BufReadPre ' .. vim.fn.expand '~/Documents/Obsidian_ROOT/Primary/**/*.md',
-      'BufNewFile ' .. vim.fn.expand '~/Documents/Obsidian_ROOT/Primary/**/*.md',
+      'BufReadPre ' .. vim.fn.expand '~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/**/*.md',
+      'BufNewFile ' .. vim.fn.expand '~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/**/*.md',
     },
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -78,7 +78,7 @@ return {
         workspaces = {
           {
             name = 'Primary',
-            path = '~/Documents/Obsidian_ROOT/Primary/',
+            path = '~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/',
           },
         },
         mappings = {
