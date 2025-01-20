@@ -237,6 +237,7 @@ return {
 
   { -- edit the file system as a buffer
     'stevearc/oil.nvim',
+    default_file_explorer = true,
     opts = {
       keymaps = {
         ['<C-s>'] = false,
