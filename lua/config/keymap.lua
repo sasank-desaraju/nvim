@@ -298,6 +298,23 @@ local function new_terminal_shell()
   new_terminal '$SHELL'
 end
 
+
+-- Comments with Comment.nvim
+wk.add({
+    {
+      '<leader>/',
+      "<ESC><cmd>lua require('Comment.api').toggle.linewise()<CR>",
+      mode = 'n',
+      desc = 'Comment toggle current line',
+    },
+    {
+      '<leader>/',
+      "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
+      mode = 'v',
+      desc = 'Comment toggle linewise',
+    },
+})
+
 -- normal mode with <leader>
 wk.add({
   {
@@ -383,6 +400,7 @@ wk.add({
     { "<leader>os", ":ObsidianSearch<cr>", desc = "obsidian [s]earch" },
     { "<leader>oo", ":ObsidianQuickSwitch<cr>", desc = "obsidian [o]pen quickswitch" },
     { "<leader>oO", ":ObsidianOpen<cr>", desc = "obsidian [O]pen in app" },
+    { "<c-l>", ":ObsidianToggleCheckbox<cr>", desc = "Toggle checkbox" },
     -- { "<leader>q", group = "[q]uarto" },
     -- { "<leader>qE", function() require('otter').export(true) end, desc = "[E]xport with overwrite" },
     -- { "<leader>qa", ":QuartoActivate<cr>", desc = "[a]ctivate" },

@@ -23,7 +23,7 @@ return {
     'epwalsh/obsidian.nvim',
     -- INFO: No vault on HPG
     enabled = true,
-    lazy = true,
+    lazy = false,
     ft = 'markdown',
     event = {
       -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
@@ -33,13 +33,37 @@ return {
     },
     dependencies = {
       'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
+      'nvim-telescope/telescope.nvim',
+      'nvim-treesitter/nvim-treesitter',
     },
     templates = {
-      -- folder = 'Templates',
       folder = 'Templates',
       date_format = '%Y-%m-%d-%a',
       time_format = '%H:%M',
     },
+
+    daily_notes = {
+      -- Optional, if you keep daily notes in a separate directory.
+      folder = "Temporal Notes/Daily Notes",
+      -- Optional, if you want to change the date format for the ID of daily notes.
+      date_format = "%Y-%m-%d",
+      -- Optional, if you want to change the date format of the default alias of daily notes.
+      -- alias_format = "%B %-d, %Y",
+      -- Optional, default tags to add to each new daily note created.
+      default_tags = { "daily-notes" },
+      -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
+      template = "Temporal Notes/Daily Notes Template.md",
+    },
+
+    -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
+    completion = {
+      -- Set to false to disable completion.
+      nvim_cmp = true,
+      -- Trigger completion at 2 chars.
+      min_chars = 2,
+    },
+
     ui = {
       enable = true, -- set to false to disable all additional syntax features
       update_debounce = 200, -- update delay after a text change (in milliseconds)
