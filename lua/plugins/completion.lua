@@ -68,10 +68,15 @@ return {
           ["<c-y>"] = cmp.mapping.confirm({
             select = true,
           }),
-          ["<CR>"] = cmp.mapping.confirm({
-            select = false,
-          }),
+          -- ["<CR>"] = cmp.mapping.confirm({
+          --   select = false,
+          -- }),
           -- ["<CR>"] = nil,
+          -- ["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+          ["<CR>"] = function(fallback)
+            -- Enter should insert a line break but do nothing else
+            fallback()
+          end,
 
           ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -181,7 +186,14 @@ return {
   { -- copilot-cmp; makes copilot an LSP completion source
     "zbirenbaum/copilot-cmp",
     config = function()
-      require("copilot_cmp").setup()
+      require("copilot_cmp").setup({
+        mapping = {
+          ["<CR>"] = function(fallback)
+            -- Enter should insert a line break but do nothing else
+            fallback()
+          end,
+        },
+      })
     end,
   },
 
@@ -195,6 +207,13 @@ return {
         panel = {
           enabled = false, -- recommended to disable by copilot-cmp
           auto_refresh = false,
+          keymap = {
+            jump_prev = "c-p",
+            jump_next = "c-n",
+            accept = "<c-y>",
+            refresh = "gr",
+            open = "<M-CR>"
+          },
         },
         suggestion = {
           enabled = false, -- recommended to disable by copilot-cmp
@@ -214,8 +233,8 @@ return {
           },
         },
         filetypes = {
-          yaml = false,
-          markdown = false,
+          yaml = true,
+          markdown = true,
         },
       })
     end,
