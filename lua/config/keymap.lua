@@ -92,28 +92,28 @@ end
 --- If an R terminal has been opend, this is in r_mode
 --- and will handle python code via reticulate when sent
 --- from a python chunk.
-local slime_send_region_cmd = ':<C-u>call slime#send_op(visualmode(), 1)<CR>'
-slime_send_region_cmd = vim.api.nvim_replace_termcodes(slime_send_region_cmd, true, false, true)
-local function send_region()
-  -- if filetyps is not quarto, just send_region
-  if vim.bo.filetype ~= 'quarto' or vim.b['quarto_is_r_mode'] == nil then
-    vim.cmd('normal' .. slime_send_region_cmd)
-    return
-  end
-  if vim.b['quarto_is_r_mode'] == true then
-    vim.g.slime_python_ipython = 0
-    local is_python = require('otter.tools.functions').is_otter_language_context 'python'
-    if is_python and not vim.b['reticulate_running'] then
-      vim.fn['slime#send']('reticulate::repl_python()' .. '\r')
-      vim.b['reticulate_running'] = true
-    end
-    if not is_python and vim.b['reticulate_running'] then
-      vim.fn['slime#send']('exit' .. '\r')
-      vim.b['reticulate_running'] = false
-    end
-    vim.cmd('normal' .. slime_send_region_cmd)
-  end
-end
+-- local slime_send_region_cmd = ':<C-u>call slime#send_op(visualmode(), 1)<CR>'
+-- slime_send_region_cmd = vim.api.nvim_replace_termcodes(slime_send_region_cmd, true, false, true)
+-- local function send_region()
+--   -- if filetyps is not quarto, just send_region
+--   if vim.bo.filetype ~= 'quarto' or vim.b['quarto_is_r_mode'] == nil then
+--     vim.cmd('normal' .. slime_send_region_cmd)
+--     return
+--   end
+--   if vim.b['quarto_is_r_mode'] == true then
+--     vim.g.slime_python_ipython = 0
+--     local is_python = require('otter.tools.functions').is_otter_language_context 'python'
+--     if is_python and not vim.b['reticulate_running'] then
+--       vim.fn['slime#send']('reticulate::repl_python()' .. '\r')
+--       vim.b['reticulate_running'] = true
+--     end
+--     if not is_python and vim.b['reticulate_running'] then
+--       vim.fn['slime#send']('exit' .. '\r')
+--       vim.b['reticulate_running'] = false
+--     end
+--     vim.cmd('normal' .. slime_send_region_cmd)
+--   end
+-- end
 
 -- send code with ctrl+Enter
 -- just like in e.g. RStudio
@@ -148,6 +148,7 @@ nmap('<c-u>', '<c-u>zz')
 
 -- move between splits and tabs
 -- TODO: Get this working with Tmux
+-- BUG: This is a repeat of lines 44
 nmap('<c-h>', '<c-w>h')
 nmap('<c-l>', '<c-w>l')
 nmap('<c-j>', '<c-w>j')
@@ -400,7 +401,7 @@ wk.add({
     { "<leader>os", ":ObsidianSearch<cr>", desc = "obsidian [s]earch" },
     { "<leader>oo", ":ObsidianQuickSwitch<cr>", desc = "obsidian [o]pen quickswitch" },
     { "<leader>oO", ":ObsidianOpen<cr>", desc = "obsidian [O]pen in app" },
-    { "<c-l>", ":ObsidianToggleCheckbox<cr>", desc = "Toggle checkbox" },
+    -- { "<c-l>", ":ObsidianToggleCheckbox<cr>", desc = "Toggle checkbox" },
     -- { "<leader>q", group = "[q]uarto" },
     -- { "<leader>qE", function() require('otter').export(true) end, desc = "[E]xport with overwrite" },
     -- { "<leader>qa", ":QuartoActivate<cr>", desc = "[a]ctivate" },
@@ -414,6 +415,7 @@ wk.add({
     -- { "<leader>qrr", ":QuartoSendAbove<cr>", desc = "to cu[r]sor" },
     -- { "<leader>r", group = "[r] R specific tools" },
     -- { "<leader>rt", show_r_table, desc = "show [t]able" },
+    { "<leader>s", ":e $MYVIMRC | :cd %:p:h<cr>", desc = "[s]ettings" },
     { "<leader>v", group = "[v]im" },
     { "<leader>vc", ":Telescope colorscheme<cr>", desc = "[c]olortheme" },
     { "<leader>vh", ':execute "h " . expand("<cword>")<cr>', desc = "vim [h]elp for current word" },
@@ -426,6 +428,12 @@ wk.add({
   }
 }, { mode = 'n'})
 
+-- Obsidian toggle checkbox
+wk.add({
+  { '<c-o>', ':ObsidianToggleCheckbox<cr>', desc = 'Toggle checkbox', mode = 'n' },
+  { '<c-o>', ':ObsidianToggleCheckbox<cr>', desc = 'Toggle checkbox', mode = 'v' },
+  { '<c-o>', '<esc>:ObsidianToggleCheckbox<cr>li', desc = 'Toggle checkbox', mode = 'i' },
+})
 
 -- Gp.nvim mappings
 wk.add({
@@ -536,3 +544,7 @@ wk.add({
         { "<C-g>x", "<cmd>GpContext<cr>", desc = "Toggle GpContext" },
     },
 })
+
+-- unmap('<CR>')
+-- vim.api.nvim_del_keymap('i', '<CR>')
+-- imap('<CR>', '<CR>')

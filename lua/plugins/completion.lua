@@ -44,8 +44,11 @@ return {
             luasnip.lsp_expand(args.body)
           end,
         },
-        completion = { completeopt = "menu,menuone,noinsert" },
-        mapping = {
+        completion = {
+          completeopt = "menu,menuone,noinsert",
+          -- autocomplete = false
+        },
+        mapping = cmp.mapping.preset.insert{
           ["<C-f>"] = cmp.mapping.scroll_docs(-4),
           ["<C-d>"] = cmp.mapping.scroll_docs(4),
 
@@ -68,15 +71,20 @@ return {
           ["<c-y>"] = cmp.mapping.confirm({
             select = true,
           }),
+          -- ["<c-y>"] = cmp.mapping.complete(),
           -- ["<CR>"] = cmp.mapping.confirm({
           --   select = false,
           -- }),
           -- ["<CR>"] = nil,
+          ["<CR>"] = cmp.mapping.abort(),
           -- ["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
-          ["<CR>"] = function(fallback)
-            -- Enter should insert a line break but do nothing else
-            fallback()
-          end,
+          -- ["<CR>"] = function(fallback)
+          --   -- Enter should insert a line break but do nothing else
+          --   fallback()
+          -- end,
+          -- ["<CR>"] = cmp.mapping(function(fallback)
+          --   cmp.mapping.abort()
+          -- end, { 'i', 'c' }),
 
           ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -188,10 +196,11 @@ return {
     config = function()
       require("copilot_cmp").setup({
         mapping = {
-          ["<CR>"] = function(fallback)
-            -- Enter should insert a line break but do nothing else
-            fallback()
-          end,
+          -- ["<CR>"] = function(fallback)
+          --   -- Enter should insert a line break but do nothing else
+          --   fallback()
+          -- end,
+          ["<CR>"] = nil,
         },
       })
     end,

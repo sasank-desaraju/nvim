@@ -100,7 +100,7 @@ return {
           -- Optional, default tags to add to each new daily note created.
           default_tags = { "daily-notes" },
           -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-          template = "Temporal Notes/Daily Notes Template.md",
+          template = "~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/Templates/Temporal Notes/Daily Notes Template.md",
         },
 
         -- Either 'wiki' or 'markdown'.
@@ -162,7 +162,7 @@ return {
           -- end
 
           -- local out = { id = note.id, aliases = note.aliases, tags = note.tags }
-          local out = { title = note.title, tags = note.tags }
+          local out = { title = note.title, aliases = note.aliases, tags = note.tags }
 
           -- `note.metadata` contains any manually added fields in the frontmatter.
           -- So here we just make sure those fields are kept in the frontmatter.
@@ -220,6 +220,6 @@ return {
   {
     -- INFO: This mirrors navigation events in Neovim in the Obsidian app.
     'oflisback/obsidian-bridge.nvim',
-    enabled = false,
+    enabled = true,
   },
 }
