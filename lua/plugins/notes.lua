@@ -47,7 +47,7 @@ return {
         workspaces = {
           {
             name = 'Primary',
-            path = '~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/',
+            path = '~/Documents/OBSIDIAN_ROOT/Primary/',
           },
         },
 
