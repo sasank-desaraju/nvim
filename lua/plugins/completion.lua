@@ -207,6 +207,9 @@ return {
   },
 
   { -- gh copilot
+    --Apparently the below lines stop copilot from inserting with tab
+    --vim.g.copilot_no_tab_map = true
+    --vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
     "zbirenbaum/copilot.lua",
     enabled = true,
     cmd = "Copilot",
@@ -245,6 +248,7 @@ return {
           yaml = true,
           markdown = true,
         },
+        --copilot_model = "",
       })
     end,
   },
