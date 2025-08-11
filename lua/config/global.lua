@@ -1,5 +1,8 @@
 -- global options
 
+-- disable line wrapping to make log files look good
+vim.o.wrap = false
+
 -- TODO: Get relative line numbers when I press/hold Ctrl
 
 local animals = require('misc.style').animals
@@ -52,6 +55,8 @@ vim.opt.mousefocus = true
 --     ["*"] = paste_from_clipboard,
 --   },
 -- }
+
+-- this works for HPG
 vim.g.clipboard = {
   name = 'tmux',
   copy = {
