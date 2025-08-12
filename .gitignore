@@ -1,0 +1,5 @@
+lazy-lock.json
+after/*
+ftplugin/*
+node_modules/*
+pack/*
