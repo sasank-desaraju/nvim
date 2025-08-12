@@ -146,7 +146,7 @@ return {
   },
   {
     'akinsho/git-conflict.nvim',
-    init = function()
+    config = function()
       require('git-conflict').setup {
         default_mappings = false,
         disable_diagnostics = true,
@@ -164,7 +164,7 @@ return {
   {
     -- TODO: Not sure if this is better than Gitsigns' git blame or not. They have different sytles but that's it.
     'f-person/git-blame.nvim',
-    init = function()
+    config = function()
       require('gitblame').setup {
         enabled = false,
       }
