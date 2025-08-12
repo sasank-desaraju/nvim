@@ -1,1 +1,7 @@
 lazy-lock.json
+after/*
+ftplugin/*
+node_modules/*
+pack/*
+package-lock.json
+package.json
