@@ -547,7 +547,3 @@ wk.add({
         { "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', desc = "Toggle GpContext", expr = true, replace_keycodes = false }, -- stops Copilot's tab completion according to CopilotChat.nvim
     },
 })
-
--- unmap('<CR>')
--- vim.api.nvim_del_keymap('i', '<CR>')
--- imap('<CR>', '<CR>')

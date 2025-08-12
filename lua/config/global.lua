@@ -1,5 +1,10 @@
 -- global options
 
+-- disable line wrapping to make log files look good
+if env.is_hpc then
+  vim.o.wrap = false
+end
+
 -- TODO: Get relative line numbers when I press/hold Ctrl
 
 local animals = require('misc.style').animals
@@ -56,31 +61,62 @@ local function paste_from_clipboard()
   return vim.split(result, "\n", { trimempty = true })
 end
 
--- Set the clipboard provider to use the tmux functions
-vim.g.clipboard = {
-  name = "tmux",
-  copy = {
-    ["+"] = copy_to_clipboard,
-    ["*"] = copy_to_clipboard,
-  },
-  paste = {
-    ["+"] = paste_from_clipboard,
-    ["*"] = paste_from_clipboard,
-  },
-  cache_enabled = true,
-}
--- vim.g.clipboard = {
---   name = 'tmux',
---   copy = {
---     ['+'] = 'tmux load-buffer -',
---     ['*'] = 'tmux load-buffer -',
---   },
---   paste = {
---     ['+'] = 'tmux save-buffer -',
---     ['*'] = 'tmux save-buffer -',
---   },
---   cache_enabled = true,
--- }
+-- -- Function to copy text to the system clipboard using tmux
+-- local function copy_to_clipboard(lines, _)
+--   local joined_lines = table.concat(lines, "\n")
+--   local tmux_cmd = "tmux load-buffer -"
+--   local handle = io.popen(tmux_cmd, "w")
+--   if handle then
+--     handle:write(joined_lines)
+--     handle:close()
+--   end
+-- end
+--
+-- -- Function to paste text from the system clipboard using tmux
+-- local function paste_from_clipboard()
+--   local tmux_cmd = "tmux save-buffer -"
+--   local handle = io.popen(tmux_cmd, "r")
+--   local result = ""
+--   if handle then
+--     result = handle:read("*a")
+--     handle:close()
+--   end
+--   return vim.split(result, "\n", { trimempty = true })
+-- end
+--
+-- -- Set the clipboard provider to use the tmux functions
+
+-- this works for HPG
+if not env.is_hpc then
+  vim.g.clipboard = {
+    name = "tmux",
+    copy = {
+      ["+"] = copy_to_clipboard,
+      ["*"] = copy_to_clipboard,
+    },
+    paste = {
+      ["+"] = paste_from_clipboard,
+      ["*"] = paste_from_clipboard,
+    },
+    cache_enabled = true,
+  }
+end
+
+-- for HPG
+if env.is_hpc then
+  vim.g.clipboard = {
+    name = 'tmux',
+    copy = {
+      ['+'] = 'tmux load-buffer -',
+      ['*'] = 'tmux load-buffer -',
+    },
+    paste = {
+      ['+'] = 'tmux save-buffer -',
+      ['*'] = 'tmux save-buffer -',
+    },
+    cache_enabled = true,
+  }
+end
 
 -- vim.g.clipboard = {
 --   name = "xsel",
