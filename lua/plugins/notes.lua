@@ -22,7 +22,7 @@ return {
   {
     'epwalsh/obsidian.nvim',
     -- INFO: No vault on HPG
-    enabled = true,
+    enabled = not env.is_hpc,
     lazy = false,
     ft = 'markdown',
     event = {

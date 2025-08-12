@@ -12,7 +12,7 @@ M.is_linux = (not M.is_mac) and M.sysname:lower():match("linux") ~= nil
 
 -- Hostname checks (you can refine as needed)
 M.is_popos = M.hostname == "pop-os"
-M.is_hpc     = M.hostname:match("%.ufhpc$")
+M.is_hpc = M.is_linux and (M.hostname:match("%.ufhpc$") ~= nil)
 -- M.is_macbook = M.is_mac  -- optionally match hostname if you want
 
 -- SSH detection
