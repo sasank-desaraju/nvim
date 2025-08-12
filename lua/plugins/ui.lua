@@ -385,9 +385,11 @@ return {
 
   { -- or show symbols in the current file as breadcrumbs
     'Bekaboo/dropbar.nvim',
-    enabled = function()
-      return vim.fn.has 'nvim-0.10' == 1
-    end,
+    enabled = false,
+    -- tag = "v10.0.0",
+    -- enabled = function()
+    --   return vim.fn.has 'nvim-0.10' == 1
+    -- end,
     dependencies = {
       'nvim-telescope/telescope-fzf-native.nvim',
     },

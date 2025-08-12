@@ -2,7 +2,7 @@ return {
   {
     "madox2/vim-ai",
     enabled = true,
-    lazy = false,
+    lazy = true,
     priority = 1000
   },
 
