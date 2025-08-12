@@ -4,6 +4,9 @@
 
 local animals = require('misc.style').animals
 
+-- makes copilot not complete with tab according to CopilotChat.nvim
+vim.g.copilot_no_tab_map = true
+
 -- proper colors
 vim.opt.termguicolors = true
 

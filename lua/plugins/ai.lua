@@ -1,7 +1,7 @@
 return {
   {
     "madox2/vim-ai",
-    enabled = true,
+    enabled = false,
     lazy = false,
     priority = 1000
   },
@@ -134,6 +134,18 @@ return {
         },
       })
     end,
-  }
+  },
+
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = true,
+    dependencies = {
+      { "nvim-lua/plenary.nvim", branch = "master" },
+    },
+    build = "make tiktoken",
+    opts = {
+      -- See Configuration section for options
+    },
+  },
 
 }

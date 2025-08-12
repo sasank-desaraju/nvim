@@ -544,6 +544,7 @@ wk.add({
         { "<C-g>wv", "<cmd>GpWhisperVnew<cr>", desc = "Whisper Vnew" },
         { "<C-g>ww", "<cmd>GpWhisper<cr>", desc = "Whisper" },
         { "<C-g>x", "<cmd>GpContext<cr>", desc = "Toggle GpContext" },
+        { "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', desc = "Toggle GpContext", expr = true, replace_keycodes = false }, -- stops Copilot's tab completion according to CopilotChat.nvim
     },
 })
 
