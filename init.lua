@@ -10,6 +10,7 @@
 -- (may be outdated with newer versions of the plugins,
 -- check for yourself if you're interested in using them)
 
+_G.env = require('config.env')
 require 'config.global'
 require 'config.lazy'
 require 'config.autocommands'
