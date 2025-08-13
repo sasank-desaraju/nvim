@@ -328,7 +328,7 @@ wk.add({
     -- { "<leader>cr", new_terminal_r, desc = "new [R] terminal" },
     { "<leader>c", group = "[c]opilot chat" },
     { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "copilot [c]hat toggle" },
-    { "<leader>cp", "<cmd>CopilotChatModels<cr>", desc = "copilot chat [p]rompts" },
+    { "<leader>cp", "<cmd>CopilotChatPrompts<cr>", desc = "copilot chat [p]rompts" },
     { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "copilot chat [m]odels" },
     { "<leader>d", group = "[d]ebug" },
     { "<leader>dt", group = "[t]est" },

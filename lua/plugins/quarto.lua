@@ -3,7 +3,7 @@ return {
   { -- requires plugins in lua/plugins/treesitter.lua and lua/plugins/lsp.lua
     -- for complete functionality (language features)
     "quarto-dev/quarto-nvim",
-    enabled = "false",
+    enabled = false,
     ft = { "quarto" },
     dev = false,
     opts = {
@@ -26,7 +26,7 @@ return {
   { -- directly open ipynb files as quarto docuements
     -- and convert back behind the scenes
     "GCBallesteros/jupytext.nvim",
-    enabled = "false",
+    enabled = false,
     opts = {
       custom_language_formatting = {
         python = {
@@ -46,7 +46,7 @@ return {
   { -- send code from python/r/qmd documets to a terminal or REPL
     -- like ipython, R, bash
     "jpalardy/vim-slime",
-    enabled = "false",
+    enabled = false,
     dev = false,
     init = function()
       vim.b["quarto_is_python_chunk"] = false
@@ -95,7 +95,7 @@ return {
 
   { -- paste an image from the clipboard or drag-and-drop
     "HakonHarnes/img-clip.nvim",
-    enabled = "false",
+    enabled = true,
     event = "BufEnter",
     ft = { "markdown", "quarto", "latex" },
     opts = {
@@ -127,9 +127,9 @@ return {
 
   { -- preview equations
     "jbyuki/nabla.nvim",
-    enabled = "false",
+    enabled = false,
     keys = {
-      { "<leader>qm", ':lua require"nabla".toggle_virt()<cr>', desc = "toggle [m]ath equations" },
+      { "<leader>qm", ':lua require("nabla").popup()<cr>', desc = "toggle [m]ath equations" },
     },
   },
 

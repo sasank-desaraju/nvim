@@ -145,6 +145,7 @@ return {
     build = "make tiktoken",
     opts = {
       -- See Configuration section for options
+      model = 'claude-3.5-sonnet'
     },
   },
 
