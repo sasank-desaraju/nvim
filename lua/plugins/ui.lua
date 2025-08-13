@@ -26,6 +26,28 @@ return {
   -- telescope
   -- a nice seletion UI also to find and open files
   {
+    'jmbuhr/telescope-zotero.nvim',
+    enabled = true,
+    lazy = false
+  },
+  {
+    'kkharji/sqlite.lua',
+    -- I need to wrap the below in if env.is_mac
+    init = function()
+      if env.is_mac then
+        local ok, prefix = pcall(function()
+          return vim.fn.system('brew --prefix sqlite'):gsub('%s+$','')
+        end)
+        if ok and prefix ~= '' then
+          vim.g.sqlite_clib_path = prefix .. '/lib/libsqlite3.dylib'
+        else
+          vim.g.sqlite_clib_path = os.getenv('HOME') .. '/homebrew/opt/sqlite/lib/libsqlite3.dylib'
+        end
+      end
+    end,
+  },
+
+  {
     'nvim-telescope/telescope.nvim',
     -- lazy = false,   -- set lazy to false for telescope-cmdline
     dependencies = {
@@ -36,7 +58,6 @@ return {
       {
         'jmbuhr/telescope-zotero.nvim',
         enabled = true,
-        dev = false,
         dependencies = {
           { 'kkharji/sqlite.lua' },
         },
