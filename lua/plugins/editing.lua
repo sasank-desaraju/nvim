@@ -138,4 +138,13 @@ return {
       'nvim-lua/plenary.nvim',
     },
   },
+
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    enabled = true,
+    opts = {
+      file_types = { "markdown", "Avante" },
+    },
+    ft = { "markdown", "Avante" },
+  },
 }
