@@ -45,9 +45,10 @@ return {
       local lspconfig = require("lspconfig")
       local util = require("lspconfig.util")
 
-      require("mason").setup()
+      require("mason").setup({ PATH = "prepend"})
       require("mason-lspconfig").setup({
-        automatic_installation = true,
+        -- automatic_enable = false,
+        -- automatic_installation = true,
       })
       require("mason-tool-installer").setup({
         ensure_installed = {
@@ -109,8 +110,9 @@ return {
       -- markdown.file_extensions = ["md", "markdown", "qmd"]
       lspconfig.marksman.setup({
         capabilities = capabilities,
-        filetypes = { "markdown", "quarto" },
-        root_dir = util.root_pattern(".git", ".marksman.toml", "_quarto.yml"),
+        -- filetypes = { "markdown" },
+        root_dir = util.root_pattern(".git", ".marksman.toml"),
+        single_file_support = true,
       })
 
       -- lspconfig.r_language_server.setup({
