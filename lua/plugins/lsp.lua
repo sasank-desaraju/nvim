@@ -84,7 +84,7 @@ return {
           map("gr", telescope.lsp_references, "[g]o to [r]eferences")
           map("[d", vim.diagnostic.goto_prev, "previous [d]iagnostic ")
           map("]d", vim.diagnostic.goto_next, "next [d]iagnostic ")
-          map("<leader>ll", vim.lsp.codelens.run, "[l]ens run")
+          -- map("<leader>ll", vim.lsp.codelens.run, "[l]ens run")
           map("<leader>lR", vim.lsp.buf.rename, "[l]sp [R]ename")
           map("<leader>lf", vim.lsp.buf.format, "[l]sp [f]ormat")
           map("<leader>lq", vim.diagnostic.setqflist, "[l]sp diagnostic [q]uickfix")
