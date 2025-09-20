@@ -161,8 +161,17 @@ return {
     ---@type avante.Config
     opts = {
       -- add any opts here
-      mode = "legacy",  -- I added this because I think it goes super high token agent mode with the default of "agentic"
-      provider = "openai",
+      mode = "agentic",  -- I added this because I think it goes super high token agent mode with the default of "agentic"
+      provider = "xai",
+      providers = {
+        xai = {
+          __inherited_from = 'openai',
+          endpoint = "https://api.x.ai/v1",
+          -- api_key_name = os.getenv("XAI_API_KEY"),
+          api_key_name = 'XAI_API_KEY',
+          model = "grok-code-fast-1",
+        },
+      },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
