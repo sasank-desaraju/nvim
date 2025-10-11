@@ -17,6 +17,7 @@ return {
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-calc",
       "hrsh7th/cmp-emoji",
+      "hrsh7th/cmp-omni",
       "saadparwaiz1/cmp_luasnip",
       "f3fora/cmp-spell",
       "ray-x/cmp-treesitter",
@@ -160,6 +161,7 @@ return {
           { name = "copilot" },
           { name = "otter" }, -- for code chunks in quarto
           { name = "path" },
+          { name = "omni", keyword_length = 1 },
           { name = "nvim_lsp" },
           { name = "nvim_lsp_signature_help" },
           { name = "luasnip", keyword_length = 3, max_item_count = 3 },
@@ -208,7 +210,7 @@ return {
 
   { -- gh copilot
     "zbirenbaum/copilot.lua",
-    enabled = true,
+    enabled = false,
     cmd = "Copilot",
     event = "InsertEnter",
     config = function()
