@@ -217,7 +217,7 @@ vim.opt.formatoptions:remove 'r'
 vim.opt.formatoptions:remove 'o'
 
 -- scroll before end of window
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 2
 
 -- (don't == 0) replace certain elements with prettier ones
 vim.opt.conceallevel = 0
