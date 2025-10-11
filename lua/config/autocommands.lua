@@ -31,3 +31,21 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "tex",
+  callback = function()
+    vim.bo.omnifunc = "vimtex#complete#omnifunc"
+  end,
+})
+
+-- Auto-save and restore folds when leaving/entering a buffer
+vim.api.nvim_create_autocmd({ "BufWinLeave" }, {
+  pattern = "*",
+  command = "silent! mkview"
+})
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  pattern = "*",
+  command = "silent! loadview"
+})
+
