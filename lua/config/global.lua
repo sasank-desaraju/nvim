@@ -148,6 +148,9 @@ vim.opt.expandtab = true
 vim.opt.shiftwidth = tabsize
 vim.opt.tabstop = tabsize
 
+-- Quickfix doesn't switch cursor to it automatically
+vim.g.vimtex_quickfix_autojump = 0
+
 -- space as leader
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
