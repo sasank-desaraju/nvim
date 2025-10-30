@@ -172,4 +172,8 @@ return {
     "HiPhish/rainbow-delimiters.nvim",
     enabled = true,
   },
+  {
+    'fei6409/log-highlight.nvim',
+    opts = {},
+  },
 }

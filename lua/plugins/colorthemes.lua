@@ -54,6 +54,25 @@ return {
     lazy = false,
     priority = 1000,
   },
+  {
+    "mcauley-penney/techbase.nvim",
+    enabled = false,
+    lazy = false,
+    config = function(_, opts)
+        vim.cmd.colorscheme("techbase")
+    end,
+    priority = 1000
+  },
+  {
+    'loganswartz/sunburn.nvim',
+    enabled = false,
+    lazy = false,
+    dependencies = { 'loganswartz/polychrome.nvim' },
+    -- you could do this, or use the standard vimscript `colorscheme sunburn`
+    config = function()
+        vim.cmd.colorscheme 'sunburn'
+    end,
+  },
 
   -- color html colors
   {

@@ -33,6 +33,10 @@ vim.keymap.set('n', '<s-3>', 'C')
 vim.keymap.set('n', '<c-4>', 'mD')
 vim.keymap.set('n', '<s-4>', 'D')
 
+-- j and k within wrapped text blocks by default
+nmap('j', 'gj')
+nmap('k', 'gk')
+
 -- move in command line
 cmap('<C-a>', '<Home>')
 cmap('<C-e>', '<End>')
