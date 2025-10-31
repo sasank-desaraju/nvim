@@ -6,6 +6,14 @@ P = vim.print
 vim.g['quarto_is_r_mode'] = nil
 vim.g['reticulate_running'] = false
 
+-- go to a tab by 'gi' for tab i
+for i = 1, 9 do
+  vim.keymap.set('n', 'g' .. i, function()
+    vim.cmd(i .. 'tabnext')
+  end, { desc = 'Go to tab ' .. i })
+end
+
+
 local nmap = function(key, effect)
   vim.keymap.set('n', key, effect, { silent = true, noremap = true })
 end

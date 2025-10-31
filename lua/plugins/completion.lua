@@ -216,7 +216,7 @@ return {
     config = function()
       require("copilot").setup({
         panel = {
-          enabled = false, -- recommended to disable by copilot-cmp
+          enabled = true, -- recommended to disable by copilot-cmp
           auto_refresh = false,
           keymap = {
             jump_prev = "c-p",
@@ -245,7 +245,7 @@ return {
         },
         filetypes = {
           yaml = true,
-          markdown = true,
+          markdown = false,
         },
       })
     end,
