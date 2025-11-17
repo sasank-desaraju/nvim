@@ -13,6 +13,8 @@ for i = 1, 9 do
   end, { desc = 'Go to tab ' .. i })
 end
 
+-- kj to exit insert mode
+vim.keymap.set('i', 'kj', '<Esc>', { noremap = true, silent = true })
 
 local nmap = function(key, effect)
   vim.keymap.set('n', key, effect, { silent = true, noremap = true })

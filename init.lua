@@ -72,12 +72,34 @@ local NS_PUNCT = vim.api.nvim_create_namespace("ProseNthHighlightPunct")
 --   "#89b4fa",
 --   "#b4befe"
 -- }
+-- Catpuccin mocha style I think
+-- local PALETTE = {
+--   "#b48ef7", "#e98ba5", "#e0a0a0", "#d45167",
+--   "#e88054", "#d9b754", "#76c45e", "#56b6a0",
+--   "#5fb3d1", "#4588c8", "#3f66d4", "#9a7fff",
+--   "#a24a63", "#6c7086"
+-- }
+
+-- a darker catpuccin it called Catpuccin Noir
+-- local PALETTE = {
+--   "#5e5c72", "#575b70", "#4e5368", "#4a4a57",
+--   "#43454d", "#3d3e44", "#3e4741", "#35363b",
+--   "#4f4654", "#2e3138"
+-- }
+-- local PALETTE = {
+--   "#4c2e3d", "#5a372d", "#495232", "#2f4738",
+--   "#2b4c4f", "#2b3f56", "#2c345c", "#3b3363",
+--   "#4b3561", "#55334e", "#25252d"
+-- }
 local PALETTE = {
-  "#b48ef7", "#e98ba5", "#e0a0a0", "#d45167",
-  "#e88054", "#d9b754", "#76c45e", "#56b6a0",
-  "#5fb3d1", "#4588c8", "#3f66d4", "#9a7fff",
-  "#a24a63", "#6c7086"
+  "#b42d47", "#d04f00", "#c98a00", "#669f3f",
+  "#00875f", "#0077b6", "#364fc7", "#6f32ad",
+  "#8a2f7a", "#7a1e43"
 }
+
+
+
+
 
 
 
