@@ -1,13 +1,14 @@
 return {
   {
     'nvim-treesitter/nvim-treesitter',
+    -- main = 'nvim-treesitter.install', -- added by Gemini AI -- commented out by Gemini AI
+    build = ':TSUpdate', -- added by Gemini AI
     dependencies = {
-      { 'nvim-treesitter/nvim-treesitter-textobjects' },
+      { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'main' }, -- added by Gemini AI
     },
-    run = ':TSUpdate',
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup {
+      require('nvim-treesitter').setup { -- changed from .configs by Gemini AI
         auto_install = true,
         ensure_installed = {
           'r',

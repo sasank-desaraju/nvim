@@ -108,12 +108,13 @@ return {
       -- $home/.config/marksman/config.toml :
       -- [core]
       -- markdown.file_extensions = ["md", "markdown", "qmd"]
-      lspconfig.marksman.setup({
+      vim.lsp.config('marksman', {
         capabilities = capabilities,
         -- filetypes = { "markdown" },
         root_dir = util.root_pattern(".git", ".marksman.toml"),
         single_file_support = true,
       })
+      vim.lsp.enable('marksman')
 
       -- lspconfig.r_language_server.setup({
       --   capabilities = capabilities,
@@ -194,7 +195,7 @@ return {
       --   table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
       -- end
 
-      lspconfig.lua_ls.setup({
+      vim.lsp.config('lua_ls', {
         capabilities = capabilities,
         flags = lsp_flags,
         settings = {
@@ -220,6 +221,7 @@ return {
           },
         },
       })
+      vim.lsp.enable('lua_ls')
 
       -- lspconfig.julials.setup({
       --   capabilities = capabilities,
