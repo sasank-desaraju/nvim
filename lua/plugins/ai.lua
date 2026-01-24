@@ -207,5 +207,22 @@ return {
       },
     },
   },
+  {
+    "greggh/claude-code.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- Required for git operations
+    },
+    config = function()
+      require("claude-code").setup()
+    end
+  },
+  {
+    "johnseth97/codex.nvim",
+    opts = {
+      width = 0.3,
+      height = 0.8,
+      panel = true,
+    }
+  }
 
 }

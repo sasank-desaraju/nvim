@@ -340,10 +340,16 @@ wk.add({
     -- { "<leader>cn", new_terminal_shell, desc = "[n]ew terminal with shell" },
     -- { "<leader>cp", new_terminal_python, desc = "new [p]ython terminal" },
     -- { "<leader>cr", new_terminal_r, desc = "new [R] terminal" },
-    { "<leader>c", group = "[c]opilot chat" },
-    { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "copilot [c]hat toggle" },
-    { "<leader>cp", "<cmd>CopilotChatPrompts<cr>", desc = "copilot chat [p]rompts" },
-    { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "copilot chat [m]odels" },
+
+    { "<leader>c", group = "[c]laude code and friends" },
+    { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Claude Code" },
+    { "<leader>co", "<cmd>CodexToggle<cr>", desc = "Codex" },
+
+    -- { "<leader>c", group = "[c]opilot chat" },
+    -- { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "copilot [c]hat toggle" },
+    -- { "<leader>cp", "<cmd>CopilotChatPrompts<cr>", desc = "copilot chat [p]rompts" },
+    -- { "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "copilot chat [m]odels" },
+
     { "<leader>d", group = "[d]ebug" },
     { "<leader>dt", group = "[t]est" },
     { "<leader>e", group = "[e]dit" },
