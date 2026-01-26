@@ -9,12 +9,12 @@ local POS_COLORS = {
   VERB  = { group = "ProseSyntax_VERB",  hex = "#3A86FF" }, -- Blue
   
   -- Supplementary colors
-  ADJ   = { group = "ProseSyntax_ADJ",   hex = "#06D6A0" }, -- Green
-  ADV   = { group = "ProseSyntax_ADV",   hex = "#FFD166" }, -- Yellow
+  ADJ   = { group = "ProseSyntax_ADJ",   hex = "#FFD166" }, -- Yellow
+  ADV   = { group = "ProseSyntax_ADV",   hex = "#06D6A0" }, -- Green
   PRON  = { group = "ProseSyntax_PRON",  hex = "#FF7B00" }, -- Orange
-  DET   = { group = "ProseSyntax_DET",   hex = "#B56576" }, -- Rose
-  ADP   = { group = "ProseSyntax_ADP",   hex = "#118AB2" }, -- Teal
-  NUM   = { group = "ProseSyntax_NUM",   hex = "#00BBF9" }, -- Light Blue
+  -- DET   = { group = "ProseSyntax_DET",   hex = "#B56576" }, -- Rose
+  -- ADP   = { group = "ProseSyntax_ADP",   hex = "#118AB2" }, -- Teal
+  -- NUM   = { group = "ProseSyntax_NUM",   hex = "#00BBF9" }, -- Light Blue
   CONJ  = { group = "ProseSyntax_CONJ",  hex = "#9B5DE5" }, -- Purple
   CCONJ = { group = "ProseSyntax_CCONJ", hex = "#9B5DE5" }, -- Purple
   SCONJ = { group = "ProseSyntax_SCONJ", hex = "#9B5DE5" }, -- Purple
@@ -31,7 +31,7 @@ local POS_COLORS = {
 
 local function ensure_hlgroups()
   for _, v in pairs(POS_COLORS) do
-    vim.api.nvim_set_hl(0, v.group, { fg = v.hex }) -- Using fg instead of bg for syntax highlighting usually looks better, but can swap to bg if desired
+    vim.api.nvim_set_hl(0, v.group, { bg = v.hex }) -- Changed from fg to bg for background highlighting
   end
 end
 
