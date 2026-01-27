@@ -31,7 +31,7 @@ local POS_COLORS = {
 
 local function ensure_hlgroups()
   for _, v in pairs(POS_COLORS) do
-    vim.api.nvim_set_hl(0, v.group, { bg = v.hex }) -- Changed from fg to bg for background highlighting
+    vim.api.nvim_set_hl(0, v.group, { fg = v.hex }) -- Changed from fg to bg for background highlighting
   end
 end
 
@@ -70,7 +70,7 @@ local function charspan_to_lc(s0, e0, line_offs, lines)
   return l1, c1, l2, c2
 end
 
-local function pos_spans_with_uv(text)
+local function run_spacy_job(text, callback)
   -- Python script to run via uv
   local py = table.concat({
     "import sys, json",
@@ -94,71 +94,129 @@ local function pos_spans_with_uv(text)
     "sys.stdout.write(json.dumps({'spans': out}))",
   }, "\n")
 
-  -- Use uv to run the script in an ephemeral environment with spacy and the model installed
-  -- We unset PYTHONPATH to avoid conflicts with system packages (e.g. typer)
-  local out = vim.fn.system({
+  local cmd = {
     "env", "PYTHONPATH=",
     "uv", "run",
     "--with", "spacy",
     "--with", "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl",
     "python", "-c", py
-  }, text)
+  }
 
-  local ok, decoded = pcall(vim.json.decode, out)
-  if not ok or type(decoded) ~= "table" then
-    return nil, "Bad Python output: " .. (out or "nil")
+  local stdout = {}
+  local stderr = {}
+
+  local job_id = vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          table.insert(stdout, line)
+        end
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          table.insert(stderr, line)
+        end
+      end
+    end,
+    on_exit = function(_, code)
+      local stdout_str = table.concat(stdout, "\n")
+      local stderr_str = table.concat(stderr, "\n")
+      callback(code, stdout_str, stderr_str)
+    end
+  })
+
+  if job_id <= 0 then
+    vim.notify("ProseSyntax: Failed to start job", vim.log.levels.ERROR)
+    return
   end
-  if decoded.error then
-    return nil, decoded.error
-  end
-  return decoded.spans, nil
+
+  vim.fn.chansend(job_id, text)
+  vim.fn.chanclose(job_id, "stdin")
 end
 
 function M.clear()
   vim.api.nvim_buf_clear_namespace(0, NS, 0, -1)
+  local bufnr = vim.api.nvim_get_current_buf()
+  pcall(vim.api.nvim_del_augroup_by_name, "ProseSyntax_" .. bufnr)
 end
 
 function M.highlight()
   ensure_hlgroups()
-  M.clear()
   
-  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local bufnr = vim.api.nvim_get_current_buf()
+  
+  -- Setup autocommand (idempotent)
+  local grp = vim.api.nvim_create_augroup("ProseSyntax_" .. bufnr, { clear = true })
+  vim.api.nvim_create_autocmd("BufWritePost", {
+    group = grp,
+    buffer = bufnr,
+    callback = function() M.highlight() end,
+    desc = "Rerun ProseSyntax highlight on save"
+  })
+  
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
   local text = table.concat(lines, "\n")
   
-  -- Don't run on empty buffers
   if #text == 0 then return end
-  
-  vim.notify("ProseSyntax: Analyzing...", vim.log.levels.INFO)
-  
-  -- Run async to avoid freezing UI? 
-  -- Current implementation is sync (vim.fn.system) which blocks. 
-  -- For a prototype, this is acceptable, but for large files it will pause editor.
+
+  -- Pre-calculate offsets for THIS text version
   local line_offs = build_line_offsets(lines)
-  local spans, err = pos_spans_with_uv(text)
+  local changedtick_start = vim.api.nvim_buf_get_changedtick(bufnr)
   
-  if not spans then
-    vim.notify("ProseSyntax Error: " .. tostring(err), vim.log.levels.ERROR)
-    return
-  end
+  vim.notify("ProseSyntax: Analyzing (async)...", vim.log.levels.INFO)
   
-  for _, s in ipairs(spans) do
-    local cfg = POS_COLORS[s.pos]
-    if cfg then
-      local l1, c1, l2, c2 = charspan_to_lc(s.start, s["end"], line_offs, lines)
-      
-      -- Ensure we don't go out of bounds
-      if lines[l1 + 1] then
-        if l1 == l2 then
-          vim.api.nvim_buf_add_highlight(0, NS, cfg.group, l1, c1, c2)
-        else
-          -- Multiline token (rare for words, but possible)
-          vim.api.nvim_buf_add_highlight(0, NS, cfg.group, l1, c1, #lines[l1 + 1])
+  run_spacy_job(text, function(code, out, err)
+    -- Back in main loop (usually)
+    if code ~= 0 then
+      vim.notify("ProseSyntax Error: " .. err, vim.log.levels.ERROR)
+      return
+    end
+
+    local ok, decoded = pcall(vim.json.decode, out)
+    if not ok then
+      vim.notify("ProseSyntax: JSON decode error: " .. (out or ""), vim.log.levels.ERROR)
+      return
+    end
+    
+    if decoded.error then
+      vim.notify("ProseSyntax Error: " .. decoded.error, vim.log.levels.ERROR)
+      return
+    end
+
+    -- Check if buffer is still valid
+    if not vim.api.nvim_buf_is_valid(bufnr) then return end
+    
+    -- Check if buffer changed while processing
+    if vim.api.nvim_buf_get_changedtick(bufnr) ~= changedtick_start then
+      vim.notify("ProseSyntax: Buffer changed during analysis, skipping update.", vim.log.levels.WARN)
+      return
+    end
+    
+    -- Clear and apply
+    vim.api.nvim_buf_clear_namespace(bufnr, NS, 0, -1)
+    
+    local spans = decoded.spans
+    for _, s in ipairs(spans) do
+      local cfg = POS_COLORS[s.pos]
+      if cfg then
+        local l1, c1, l2, c2 = charspan_to_lc(s.start, s["end"], line_offs, lines)
+        
+        -- Ensure we don't go out of bounds (using the captured 'lines')
+        if lines[l1 + 1] then
+          if l1 == l2 then
+            vim.api.nvim_buf_add_highlight(bufnr, NS, cfg.group, l1, c1, c2)
+          else
+            vim.api.nvim_buf_add_highlight(bufnr, NS, cfg.group, l1, c1, #lines[l1 + 1])
+          end
         end
       end
     end
-  end
-  
-  vim.notify("ProseSyntax: Done.", vim.log.levels.INFO)
+    
+    vim.notify("ProseSyntax: Done.", vim.log.levels.INFO)
+  end)
 end
 
 -- Commands
