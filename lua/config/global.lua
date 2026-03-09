@@ -235,6 +235,9 @@ vim.filetype.add {
   extension = {
     -- ojs = 'javascript',
   },
+  pattern = {
+    ['.*/qmd/.*%.md'] = 'quarto',
+  },
 }
 
 -- additional builtin vim packages
