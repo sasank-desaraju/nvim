@@ -52,12 +52,9 @@ return {
       })
       require("mason-tool-installer").setup({
         ensure_installed = {
-          "black",
           "stylua",
           "shfmt",
-          "isort",
           "tree-sitter-cli",
-          "jupytext",
         },
       })
 

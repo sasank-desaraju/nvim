@@ -3,8 +3,16 @@ local uv = vim.uv or vim.loop
 
 local M = {}
 
+local local_bin = vim.fn.expand("~/.local/bin")
+if vim.fn.isdirectory(local_bin) == 1 and not vim.env.PATH:find(local_bin, 1, true) then
+  vim.env.PATH = local_bin .. ":" .. vim.env.PATH
+end
+
 M.hostname = (uv.os_gethostname and uv.os_gethostname()) or vim.fn.hostname()
 M.sysname  = (uv.os_uname and uv.os_uname().sysname) or ""
+
+M.obsidian_vault = vim.fn.expand(vim.env.OBSIDIAN_VAULT or "~/Documents/OBSIDIAN_ROOT/Primary")
+M.has_obsidian_vault = vim.fn.isdirectory(M.obsidian_vault) == 1
 
 -- OS checks
 M.is_mac   = vim.fn.has("macunix") == 1
@@ -30,4 +38,3 @@ function M.summary()
 end
 
 return M
-
