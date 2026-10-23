@@ -14,11 +14,7 @@ end
 vim.opt.runtimepath:prepend(lazypath)
 
 -- actually load Lazy
-require("lazy").setup({
-  spec = {
-    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    { import = "plugins" },
-  },
+require("lazy").setup("plugins", {
   defaults = {
     version = false,
   },

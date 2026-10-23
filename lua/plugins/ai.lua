@@ -175,7 +175,7 @@ return {
 
   {
     "yetone/avante.nvim",
-    enabled = true,
+    enabled = vim.fn.has("nvim-0.12") == 1, -- current avante requires nvim 0.12
     event = "VeryLazy",
     build = vim.fn.has("win32") ~= 0
         and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"

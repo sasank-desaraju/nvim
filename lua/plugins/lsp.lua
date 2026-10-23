@@ -38,7 +38,7 @@ return {
         enabled = false,
         opts = {},
       },
-      { "folke/neodev.nvim", opts = {}, enabled = false }, -- superseded by lazydev.nvim (LazyVim v16)
+      { "folke/neodev.nvim", opts = {}, enabled = false }, -- deprecated; replaced by lazydev below
       { "folke/neoconf.nvim", opts = {}, enabled = false },
     },
     config = function()
@@ -46,6 +46,7 @@ return {
       local util = require("lspconfig.util")
       local mason_tools = {
         "pyright",
+        "ruff",
         "jupytext",
       }
       -- Mason's prebuilt tree-sitter needs glibc >= 2.35 (HPG has 2.34), so
@@ -276,8 +277,43 @@ return {
       end
       capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
-      -- pyright is configured by the LazyVim python extra (lazyvim.json).
+      -- Python language server for definitions, hover documentation, completion, and diagnostics.
+      vim.lsp.config('pyright', {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
+            },
+          },
+        },
+        -- Neovim 0.11+ native config passes (bufnr, on_dir), not a filename.
+        root_dir = function(bufnr, on_dir)
+          on_dir(vim.fs.root(bufnr, { ".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt" })
+            or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
+        end,
+      })
+      vim.lsp.enable('pyright')
+
+      -- Ruff: fast Python linting and formatting (use <leader>lf to format).
+      vim.lsp.config('ruff', { capabilities = capabilities })
+      vim.lsp.enable('ruff')
 
     end,
+  },
+  { -- Neovim Lua API completion/types for lua_ls
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = { library = { { path = "${3rd}/luv/library", words = { "vim%.uv" } } } },
+  },
+  { -- Pick a Python venv for LSP/terminals (project .venv is auto-activated anyway)
+    "linux-cultist/venv-selector.nvim",
+    dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim" },
+    cmd = "VenvSelect",
+    keys = { { "<leader>cv", "<cmd>VenvSelect<cr>", desc = "select python [v]env" } },
+    opts = {},
   },
 }
