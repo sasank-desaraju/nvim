@@ -58,9 +58,13 @@ return {
 
       local mason_tools = {
         "pyright",
-        "tree-sitter-cli",
         "jupytext",
       }
+      -- Mason's prebuilt tree-sitter needs glibc >= 2.35 (HPG has 2.34), so
+      -- only install it when no tree-sitter is already on PATH (e.g. pixi/cargo).
+      if vim.fn.executable("tree-sitter") == 0 then
+        table.insert(mason_tools, "tree-sitter-cli")
+      end
 
       -- Initialize Mason at startup so :Mason is an exact command and its
       -- package binaries are available to LSP clients.
