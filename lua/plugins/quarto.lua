@@ -6,12 +6,18 @@ return {
     enabled = true,
     ft = { "quarto", "markdown" },
     dev = false,
+    dependencies = { "jmbuhr/otter.nvim" },
     opts = {
       lspFeatures = {
-        enabled = false,
+        enabled = true, -- LSP inside code chunks, via otter
+        chunks = "all",
+        languages = { "python", "bash", "lua" },
+        diagnostics = { enabled = true, triggers = { "BufWritePost" } },
+        completion = { enabled = true },
       },
       codeRunner = {
-        enabled = false,
+        enabled = true,
+        default_method = "slime", -- send chunks to a terminal running ipython
       },
     },
   },
@@ -39,7 +45,7 @@ return {
   { -- send code from python/r/qmd documets to a terminal or REPL
     -- like ipython, R, bash
     "jpalardy/vim-slime",
-    enabled = false,
+    enabled = true,
     dev = false,
     init = function()
       vim.b["quarto_is_python_chunk"] = false
