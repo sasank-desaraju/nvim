@@ -21,17 +21,15 @@ return {
 
   {
     'epwalsh/obsidian.nvim',
-    -- INFO: No vault on HPG
-    enabled = not env.is_hpc,
+    -- INFO: No vault on HPG or fresh server installs.
+    enabled = not env.is_hpc and env.has_obsidian_vault,
     lazy = false,
     ft = 'markdown',
     event = {
       -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
       -- The below events are when the plugin will be loaded.
       -- I am disabling it because I want it always on anyway
-      -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-      -- 'BufReadPre ' .. vim.fn.expand '~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/**/*.md',
-      -- 'BufNewFile ' .. vim.fn.expand '~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/**/*.md',
+      -- E.g. 'BufReadPre ' .. env.obsidian_vault .. '/**/*.md'
     },
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -47,7 +45,7 @@ return {
         workspaces = {
           {
             name = 'Primary',
-            path = '~/Documents/OBSIDIAN_ROOT/Primary/',
+            path = env.obsidian_vault,
           },
         },
 
@@ -100,7 +98,7 @@ return {
           -- Optional, default tags to add to each new daily note created.
           default_tags = { "daily-notes" },
           -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-          template = "~/Documents/OBSIDIAN_ROOT/Obsidian-Primary/Templates/Temporal Notes/Daily Notes Template.md",
+          template = env.obsidian_vault .. "/Templates/Temporal Notes/Daily Notes Template.md",
         },
 
         -- Either 'wiki' or 'markdown'.
