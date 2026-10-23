@@ -3,23 +3,22 @@ return {
   { -- requires plugins in lua/plugins/treesitter.lua and lua/plugins/lsp.lua
     -- for complete functionality (language features)
     "quarto-dev/quarto-nvim",
-    enabled = false,
-    ft = { "quarto" },
+    enabled = true,
+    ft = { "quarto", "markdown" },
     dev = false,
+    dependencies = { "jmbuhr/otter.nvim" },
     opts = {
       lspFeatures = {
-        languages = { "r", "python", "julia", "bash", "lua", "html", "dot", "javascript", "typescript", "ojs" },
+        enabled = true, -- LSP inside code chunks, via otter
+        chunks = "all",
+        languages = { "python", "bash", "lua" },
+        diagnostics = { enabled = true, triggers = { "BufWritePost" } },
+        completion = { enabled = true },
       },
       codeRunner = {
         enabled = true,
-        default_method = "slime",
+        default_method = "slime", -- send chunks to a terminal running ipython
       },
-    },
-    dependencies = {
-      -- for language features in code cells
-      -- configured in lua/plugins/lsp.lua and
-      -- added as a nvim-cmp source in lua/plugins/completion.lua
-      "jmbuhr/otter.nvim",
     },
   },
 
@@ -46,7 +45,7 @@ return {
   { -- send code from python/r/qmd documets to a terminal or REPL
     -- like ipython, R, bash
     "jpalardy/vim-slime",
-    enabled = false,
+    enabled = true,
     dev = false,
     init = function()
       vim.b["quarto_is_python_chunk"] = false

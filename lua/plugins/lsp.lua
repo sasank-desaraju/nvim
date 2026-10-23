@@ -3,7 +3,7 @@ return {
 
     -- for lsp features in code cells / embedded code
     "jmbuhr/otter.nvim",
-    enabled = false,
+    enabled = true,
     dev = false,
     dependencies = {
       {
@@ -29,8 +29,8 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      { "williamboman/mason.nvim" },
-      { "williamboman/mason-lspconfig.nvim" },
+      { "mason-org/mason.nvim" },
+      { "mason-org/mason-lspconfig.nvim" },
       { "WhoIsSethDaniel/mason-tool-installer.nvim" },
       { -- nice loading notifications
         -- PERF: but can slow down startup
@@ -38,7 +38,7 @@ return {
         enabled = false,
         opts = {},
       },
-      { "folke/neodev.nvim", opts = {}, enabled = true },
+      { "folke/neodev.nvim", opts = {}, enabled = false }, -- superseded by lazydev.nvim (LazyVim v16)
       { "folke/neoconf.nvim", opts = {}, enabled = false },
     },
     config = function()
@@ -67,7 +67,7 @@ return {
       require("mason").setup({ PATH = "prepend" })
       require("mason-lspconfig").setup()
       require("mason-tool-installer").setup({
-        ensure_installed = mason_tools,
+        ensure_installed = vim.list_extend(vim.deepcopy(mason_tools), { "stylua", "shfmt" }),
       })
 
       vim.api.nvim_create_user_command('MasonBootstrap', function()
@@ -303,23 +303,14 @@ return {
             },
           },
         },
-        root_dir = function(fname)
-          return util.root_pattern(".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(fname)
-            or util.path.dirname(fname)
+        -- Neovim 0.11+ native config passes (bufnr, on_dir), not a filename.
+        root_dir = function(bufnr, on_dir)
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          on_dir(vim.fs.root(bufnr, { ".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt" })
+            or vim.fs.dirname(fname))
         end,
       })
 
-      -- Start Pyright explicitly for Python buffers.  This keeps Python LSP
-      -- startup reliable with Neovim's native LSP configuration API.
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("python-lsp-start", { clear = true }),
-        pattern = "python",
-        callback = function(args)
-          if #vim.lsp.get_clients({ bufnr = args.buf, name = "pyright" }) == 0 then
-            vim.lsp.start(vim.lsp.config.pyright, { bufnr = args.buf })
-          end
-        end,
-      })
     end,
   },
 }

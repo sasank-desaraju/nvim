@@ -1,7 +1,7 @@
 return {
-  { "shaunsingh/nord.nvim", enabled = false, lazy = false, priority = 1000 },
-  { "folke/tokyonight.nvim", enabled = false, lazy = false, priority = 1000 },
-  { "EdenEast/nightfox.nvim", enabled = false, lazy = false, priority = 1000 },
+  { "shaunsingh/nord.nvim", enabled = true, lazy = false, priority = 1000 },
+  { "folke/tokyonight.nvim", enabled = true, lazy = false, priority = 1000 },
+  { "EdenEast/nightfox.nvim", enabled = true, lazy = false, priority = 1000 },
   {
     "catppuccin/nvim",
     name = "catppuccin",
@@ -18,25 +18,34 @@ return {
   },
 
   {
+    "xero/evangelion.nvim",
+    lazy = false,
+    priority = 1000,
+    init = function()
+      -- vim.cmd.colorscheme("evangelion")
+    end,
+  },
+
+  {
     "oxfist/night-owl.nvim",
-    enabled = false,
+    enabled = true,
     lazy = false,
     priority = 1000,
     config = function()
       -- load the colorscheme here
-      require("night-owl").setup()
-      vim.cmd.colorscheme("night-owl")
-      vim.api.nvim_set_hl(0, "TermCursor", { fg = "#A6E3A1", bg = "#A6E3A1" })
+      -- commented this out bc it was autoloading this sceheme instead of catpuccin
+      -- require("night-owl").setup()
+      -- vim.api.nvim_set_hl(0, "TermCursor", { fg = "#A6E3A1", bg = "#A6E3A1" })
     end,
   },
 
   {
     "rebelot/kanagawa.nvim",
-    enabled = false,
+    enabled = true,
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme("kanagawa")
+      -- vim.cmd.colorscheme("kanagawa")
       vim.api.nvim_set_hl(0, "TermCursor", { fg = "#A6E3A1", bg = "#A6E3A1" })
     end,
   },
@@ -56,10 +65,10 @@ return {
   },
   {
     "mcauley-penney/techbase.nvim",
-    enabled = false,
+    enabled = true,
     lazy = false,
     config = function(_, opts)
-        vim.cmd.colorscheme("techbase")
+        -- vim.cmd.colorscheme("techbase")
     end,
     priority = 1000
   },
@@ -70,7 +79,7 @@ return {
     dependencies = { 'loganswartz/polychrome.nvim' },
     -- you could do this, or use the standard vimscript `colorscheme sunburn`
     config = function()
-        vim.cmd.colorscheme 'sunburn'
+        -- vim.cmd.colorscheme 'sunburn'
     end,
   },
 
