@@ -26,83 +26,6 @@ vim.opt.number = true -- show linenumbers
 vim.opt.mouse = 'a' -- enable mouse
 vim.opt.mousefocus = true
 
--- Function to copy text to the system clipboard using tmux
-local function copy_to_clipboard(lines, _)
-  local joined_lines = table.concat(lines, "\n")
-  local tmux_cmd = "tmux load-buffer -"
-  local handle = io.popen(tmux_cmd, "w")
-  if handle then
-    handle:write(joined_lines)
-    handle:close()
-  end
-  -- Sync with system clipboard
-  local xclip_handle = io.popen("xclip -selection clipboard", "w")
-  if xclip_handle then
-    xclip_handle:write(joined_lines)
-    xclip_handle:close()
-  end
-end
-
--- Function to paste text from the system clipboard using tmux
-local function paste_from_clipboard()
-  local tmux_cmd = "tmux save-buffer -"
-  local handle = io.popen(tmux_cmd, "r")
-  local result = ""
-  if handle then
-    result = handle:read("*a")
-    handle:close()
-  end
-  -- Pull from system clipboard instead if it is available
-  local xclip_result = io.popen("xclip -selection clipboard -o", "r")
-  if xclip_result then
-    result = xclip_result:read("*a")
-    xclip_result:close()
-  end
-  return vim.split(result, "\n", { trimempty = true })
-end
-
--- -- Function to copy text to the system clipboard using tmux
--- local function copy_to_clipboard(lines, _)
---   local joined_lines = table.concat(lines, "\n")
---   local tmux_cmd = "tmux load-buffer -"
---   local handle = io.popen(tmux_cmd, "w")
---   if handle then
---     handle:write(joined_lines)
---     handle:close()
---   end
--- end
---
--- -- Function to paste text from the system clipboard using tmux
--- local function paste_from_clipboard()
---   local tmux_cmd = "tmux save-buffer -"
---   local handle = io.popen(tmux_cmd, "r")
---   local result = ""
---   if handle then
---     result = handle:read("*a")
---     handle:close()
---   end
---   return vim.split(result, "\n", { trimempty = true })
--- end
---
--- -- Set the clipboard provider to use the tmux functions
-
--- this works for HPG
-if not env.is_hpc then
-  vim.g.clipboard = {
-    name = "tmux",
-    copy = {
-      ["+"] = copy_to_clipboard,
-      ["*"] = copy_to_clipboard,
-    },
-    paste = {
-      ["+"] = paste_from_clipboard,
-      ["*"] = paste_from_clipboard,
-    },
-    cache_enabled = true,
-  }
-end
-
--- for HPG
 if env.is_hpc then
   vim.g.clipboard = {
     name = 'tmux',
@@ -116,22 +39,49 @@ if env.is_hpc then
     },
     cache_enabled = true,
   }
+elseif vim.fn.executable 'wl-copy' == 1 and vim.env.WAYLAND_DISPLAY then
+  vim.g.clipboard = {
+    name = 'wl-clipboard',
+    copy = {
+      ['+'] = 'wl-copy --foreground --type text/plain',
+      ['*'] = 'wl-copy --foreground --primary --type text/plain',
+    },
+    paste = {
+      ['+'] = 'wl-paste --no-newline',
+      ['*'] = 'wl-paste --no-newline --primary',
+    },
+    cache_enabled = true,
+  }
+  vim.opt.clipboard = 'unnamedplus'
+elseif vim.fn.executable 'xsel' == 1 and vim.env.DISPLAY then
+  vim.g.clipboard = {
+    name = 'xsel',
+    copy = {
+      ['+'] = 'xsel --clipboard --input',
+      ['*'] = 'xsel --primary --input',
+    },
+    paste = {
+      ['+'] = 'xsel --clipboard --output',
+      ['*'] = 'xsel --primary --output',
+    },
+    cache_enabled = true,
+  }
+  vim.opt.clipboard = 'unnamedplus'
+elseif vim.fn.executable 'xclip' == 1 and vim.env.DISPLAY then
+  vim.g.clipboard = {
+    name = 'xclip',
+    copy = {
+      ['+'] = 'xclip -selection clipboard -in',
+      ['*'] = 'xclip -selection primary -in',
+    },
+    paste = {
+      ['+'] = 'xclip -selection clipboard -out',
+      ['*'] = 'xclip -selection primary -out',
+    },
+    cache_enabled = true,
+  }
+  vim.opt.clipboard = 'unnamedplus'
 end
-
--- vim.g.clipboard = {
---   name = "xsel",
---   copy = {
---     ["+"] = "xsel --clipboard --input",
---     ["*"] = "xsel --primary --input",
---   },
---   paste = {
---     ["+"] = "xsel --clipboard --output",
---     ["*"] = "xsel --primary --output",
---   },
---   cache_enabled = true,
--- }
--- vim.o.clipboard = 'unnamedplus'
--- vim.opt.clipboard:append("unnamedplus") -- use system clipboard
 
 vim.opt.timeoutlen = 400 -- until which-key pops up
 vim.opt.updatetime = 250 -- for autocommands and hovers

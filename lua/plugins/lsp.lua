@@ -29,8 +29,8 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      { "williamboman/mason.nvim" },
-      { "williamboman/mason-lspconfig.nvim" },
+      { "mason-org/mason.nvim" },
+      { "mason-org/mason-lspconfig.nvim" },
       { "WhoIsSethDaniel/mason-tool-installer.nvim" },
       { -- nice loading notifications
         -- PERF: but can slow down startup
@@ -38,7 +38,7 @@ return {
         enabled = false,
         opts = {},
       },
-      { "folke/neodev.nvim", opts = {}, enabled = true },
+      { "folke/neodev.nvim", opts = {}, enabled = false }, -- superseded by lazydev.nvim (LazyVim v16)
       { "folke/neoconf.nvim", opts = {}, enabled = false },
     },
     config = function()
