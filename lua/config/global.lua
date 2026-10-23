@@ -1,8 +1,9 @@
 -- global options
 
 -- disable line wrapping to make log files look good
+-- enabling again on 2026-07-06 for convenience
 if env.is_hpc then
-  vim.o.wrap = false
+  vim.o.wrap = true
 end
 
 -- TODO: Get relative line numbers when I press/hold Ctrl

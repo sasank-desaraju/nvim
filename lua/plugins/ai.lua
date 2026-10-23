@@ -10,7 +10,17 @@ return {
   {
     "Robitx/gp.nvim",
     enabled = true,
-    lazy = false,
+    cmd = {
+      'GpChatNew',
+      'GpChatToggle',
+      'GpRewrite',
+      'GpAppend',
+      'GpPopup',
+      'GpImplement',
+      'GpExplain',
+      'GpInspectPlugin',
+      'GpInspectLog',
+    },
     config = function()
       require("gp").setup({
 
@@ -139,6 +149,20 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true,
+    cmd = {
+      'CopilotChat',
+      'CopilotChatOpen',
+      'CopilotChatClose',
+      'CopilotChatToggle',
+      'CopilotChatExplain',
+      'CopilotChatReview',
+      'CopilotChatFix',
+      'CopilotChatTests',
+      'CopilotChatCommit',
+      'CopilotChatDocs',
+      'CopilotChatModels',
+      'CopilotChatAgents',
+    },
     dependencies = {
       { "nvim-lua/plenary.nvim", branch = "master" },
     },
@@ -185,7 +209,7 @@ return {
       {
         -- support for image pasting
         "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
+        ft = { 'markdown', 'Avante' },
         opts = {
           -- recommended settings
           default = {
@@ -209,6 +233,7 @@ return {
   },
   {
     "greggh/claude-code.nvim",
+    cmd = { 'ClaudeCode' },
     dependencies = {
       "nvim-lua/plenary.nvim", -- Required for git operations
     },
@@ -218,6 +243,7 @@ return {
   },
   {
     "johnseth97/codex.nvim",
+    cmd = { 'Codex' },
     opts = {
       width = 0.3,
       height = 0.8,

@@ -16,14 +16,16 @@ return {
     'numToStr/Comment.nvim',
     version = nil,
     branch = 'master',
+    event = 'VeryLazy',
     config = true,
   },
 
   { -- format things as tables
     'godlygeek/tabular',
+    cmd = { 'Tabularize' },
   },
 
-  { -- Autoformat
+  { -- Optional manual formatting, disabled by default.
     'stevearc/conform.nvim',
     enabled = false,
     config = function()
@@ -150,7 +152,7 @@ return {
 
   {
     "lervag/vimtex",
-    lazy = false,     -- we don't want to lazy load VimTeX
+    ft = { 'tex', 'plaintex', 'bib' },
     -- tag = "v2.15", -- uncomment to pin to a specific release
     init = function()
       -- VimTeX configuration goes here, e.g.

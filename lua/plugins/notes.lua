@@ -227,7 +227,6 @@ return {
     ---@type CsvView.Options
     'hat0uma/csvview.nvim',
     enabled = true,
-    lazy = false,
     opts = {
       parser = { comments = { "#", "//" } },
       keymaps = {

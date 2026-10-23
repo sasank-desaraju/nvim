@@ -401,7 +401,7 @@ wk.add({
     { "<leader>i", group = "[i]mage" },
     { "<leader>l", group = "[l]atex/language/lsp" },
     { "<leader>la", vim.lsp.buf.code_action, desc = "code [a]ction" },
-    { "<leader>ll", ":VimtexCompile<cr>", desc = "Compile [l]atex" },
+    -- { "<leader>ll", ":VimtexCompile<cr>", desc = "Compile [l]atex" },
     { "<leader>ld", group = "[d]iagnostics" },
     { "<leader>ldd", function() vim.diagnostic.enable(false) end, desc = "[d]isable" },
     { "<leader>lde", vim.diagnostic.enable, desc = "[e]nable" },

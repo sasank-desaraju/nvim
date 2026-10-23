@@ -1,7 +1,7 @@
 -- git plugins
 
 return {
-  { 'sindrets/diffview.nvim' },
+  { 'sindrets/diffview.nvim', cmd = { 'DiffviewOpen', 'DiffviewFileHistory', 'DiffviewClose', 'DiffviewFocusFiles', 'DiffviewRefresh' } },
 
   -- { "tpope/vim-fugitive" },    # Apparently Neogit is fugitive++
 
@@ -70,6 +70,7 @@ return {
   {
     'lewis6991/gitsigns.nvim',
     enabled = true,
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       require('gitsigns').setup {
         signs = {
@@ -164,6 +165,7 @@ return {
   {
     -- TODO: Not sure if this is better than Gitsigns' git blame or not. They have different sytles but that's it.
     'f-person/git-blame.nvim',
+    event = 'VeryLazy',
     config = function()
       require('gitblame').setup {
         enabled = false,

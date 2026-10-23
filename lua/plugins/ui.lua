@@ -28,7 +28,7 @@ return {
   {
     'jmbuhr/telescope-zotero.nvim',
     enabled = true,
-    lazy = false
+    cmd = 'Telescope',
   },
   {
     'kkharji/sqlite.lua',
@@ -49,6 +49,25 @@ return {
 
   {
     'nvim-telescope/telescope.nvim',
+    cmd = 'Telescope',
+    keys = {
+      { '<leader>f', nil, desc = '[f]ind (telescope)' },
+      { '<leader>f<space>', '<cmd>Telescope buffers<cr>', desc = '[ ] buffers' },
+      { '<leader>fM', '<cmd>Telescope man_pages<cr>', desc = '[M]an pages' },
+      { '<leader>fb', '<cmd>Telescope current_buffer_fuzzy_find<cr>', desc = '[b]uffer fuzzy find' },
+      { '<leader>fc', '<cmd>Telescope git_commits<cr>', desc = '[c]ommits' },
+      { '<leader>fd', '<cmd>Telescope diagnostics<cr>', desc = '[d]iagnostics' },
+      { '<leader>ff', '<cmd>Telescope find_files<cr>', desc = '[f]iles' },
+      { '<leader>fg', '<cmd>Telescope live_grep<cr>', desc = '[g]rep' },
+      { '<leader>fh', '<cmd>Telescope help_tags<cr>', desc = '[h]elp' },
+      { '<leader>fk', '<cmd>Telescope keymaps<cr>', desc = '[k]eymaps' },
+      { '<leader>fm', '<cmd>Telescope marks<cr>', desc = '[m]arks' },
+      { '<leader>fo', '<cmd>Telescope oldfiles<cr>', desc = '[o]ldfiles' },
+      { '<leader>fr', '<cmd>Telescope registers<cr>', desc = '[r]egisters' },
+      { '<leader>fs', '<cmd>Telescope spell_suggest<cr>', desc = '[s]pell suggest' },
+      { '<leader>ft', '<cmd>Telescope treesitter<cr>', desc = '[t]reesitter' },
+      { '<leader>fz', '<cmd>Telescope zotero<cr>', desc = '[z]otero' },
+    },
     -- lazy = false,   -- set lazy to false for telescope-cmdline
     dependencies = {
       { 'nvim-telescope/telescope-ui-select.nvim' },
@@ -171,7 +190,7 @@ return {
       }
       telescope.load_extension 'fzf'
       telescope.load_extension 'ui-select'
-      telescope.load_extension 'dap'
+      pcall(telescope.load_extension, 'dap')
       telescope.load_extension 'zotero'
       -- telescope.load_extension("cmdline")
     end,
@@ -314,6 +333,7 @@ return {
   { -- nicer-looking tabs with close icons
     'nanozuki/tabby.nvim',
     enabled = true,
+    event = 'VeryLazy',
     config = function()
       require('tabby.tabline').use_preset 'tab_only'
     end,
@@ -406,6 +426,7 @@ return {
   {
     'folke/which-key.nvim',
     enabled = true,
+    event = 'VeryLazy',
     config = function()
       require('which-key').setup {}
       require 'config.keymap'
@@ -440,6 +461,10 @@ return {
 
   { -- floating terminal
     'akinsho/toggleterm.nvim',
+    cmd = { 'ToggleTerm', 'TermExec' },
+    keys = {
+      { '<c-\\>', '<cmd>ToggleTerm<cr>', desc = 'toggle terminal' },
+    },
     opts = {
       open_mapping = [[<c-\>]],
       direction = 'float',
@@ -614,7 +639,7 @@ return {
   {
     -- TODO: stop the noice feature where treesitter (?) goes crazy on the right hand side whenever I'm typing
     'folke/noice.nvim',
-    enabled = 'false',
+    enabled = false,
     event = 'VeryLazy',
     opts = {
       -- add any options here

@@ -22,21 +22,47 @@ return {
   -- debug adapter protocol
   {
     'mfussenegger/nvim-dap',
+    cmd = { 'DapContinue', 'DapToggleBreakpoint', 'DapStepOver', 'DapStepInto', 'DapStepOut', 'DapReplOpen' },
     dependencies = {
       {
-        'nvim-neotest/nvim-nio',
         'rcarriga/nvim-dap-ui',
-        'mfussenegger/nvim-dap-python',
-        'theHamsta/nvim-dap-virtual-text',
+        dependencies = {
+          'nvim-neotest/nvim-nio',
+        },
       },
+      'mfussenegger/nvim-dap-python',
+      'theHamsta/nvim-dap-virtual-text',
     },
     config = function()
       vim.fn.sign_define('DapBreakpoint', { text = '🦆', texthl = '', linehl = '', numhl = '' })
       local dap = require 'dap'
-      local ui = require 'dapui'
-      require('dapui').setup()
-      require('dap-python').setup()
-      require('dap.ext.vscode').load_launchjs 'launch.json'
+
+      local dapui_ok, ui = pcall(require, 'dapui')
+      if dapui_ok then
+        ui.setup()
+      end
+
+      -- Use uv to provide debugpy, while the launched program uses the
+      -- project's local environment when one is available.
+      require('dap-python').setup('uv', {
+        console = 'integratedTerminal',
+      })
+      require('dap-python').test_runner = 'pytest'
+
+      -- Script-mode launch for the editable Marimo builder.  This mirrors
+      -- `uv run --script dataset_notebooks/build.py` without starting the
+      -- interactive Marimo editor.
+      table.insert(dap.configurations.python, {
+        type = 'python',
+        request = 'launch',
+        name = 'Marimo builder (script mode)',
+        program = '${file}',
+        python = { 'uv', 'run', '--script' },
+        args = { '--execute' },
+        cwd = '${workspaceFolder}',
+        console = 'integratedTerminal',
+        justMyCode = false,
+      })
 
       require('nvim-dap-virtual-text').setup {
         -- Hides tokens, secrets, and other sensitive information
@@ -57,27 +83,45 @@ return {
         end,
       }
 
-      dap.listeners.before.attach.dapui_config = function()
-        ui.open()
-      end
-      dap.listeners.before.launch.dapui_config = function()
-        ui.open()
-      end
-      dap.listeners.before.event_terminated.dapui_config = function()
-        ui.close()
-      end
-      dap.listeners.before.event_exited.dapui_config = function()
-        ui.close()
+      if dapui_ok then
+        dap.listeners.before.attach.dapui_config = function()
+          ui.open()
+        end
+        dap.listeners.before.launch.dapui_config = function()
+          ui.open()
+        end
+        dap.listeners.before.event_terminated.dapui_config = function()
+          ui.close()
+        end
+        dap.listeners.before.event_exited.dapui_config = function()
+          ui.close()
+        end
       end
     end,
     keys = {
-      { '<leader>db', ":lua require'dap'.toggle_breakpoint()<cr>", desc = 'debug [b]reakpoint' },
-      { '<leader>dc', ":lua require'dap'.continue()<cr>", desc = 'debug [c]ontinue' },
-      { '<leader>do', ":lua require'dap'.step_over()<cr>", desc = 'debug [o]ver' },
-      { '<leader>dO', ":lua require'dap'.step_out()<cr>", desc = 'debug [O]ut' },
-      { '<leader>di', ":lua require'dap'.step_into()<cr>", desc = 'debug [i]nto' },
-      { '<leader>dr', ":lua require'dap'.repl_open()<cr>", desc = 'debug [r]epl' },
-      { '<leader>du', ":lua require'dapui'.toggle()<cr>", desc = 'debug [u]i' },
+      { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'debug [b]reakpoint' },
+      { '<leader>dc', function() require('dap').continue() end, desc = 'debug [c]ontinue' },
+      { '<leader>do', function() require('dap').step_over() end, desc = 'debug [o]ver' },
+      { '<leader>dO', function() require('dap').step_out() end, desc = 'debug [O]ut' },
+      { '<leader>di', function() require('dap').step_into() end, desc = 'debug [i]nto' },
+      { '<leader>dr', function() require('dap').repl_open() end, desc = 'debug [r]epl' },
+      { '<leader>dq', function() require('dap').terminate() end, desc = 'debug [q]uit' },
+      { '<leader>dx', function() require('dap').clear_breakpoints() end, desc = 'debug clear breakpoints' },
+      { '<leader>de', function() require('dap').set_exception_breakpoints({ 'raised', 'uncaught' }) end, desc = 'debug [e]xceptions' },
+      { '<leader>dv', function() require('dap').eval() end, mode = { 'n', 'v' }, desc = 'debug e[v]aluate' },
+      {
+        '<leader>du',
+        function()
+          local dapui_ok, ui = pcall(require, 'dapui')
+          if dapui_ok then
+            ui.toggle()
+            return
+          end
+
+          vim.notify('nvim-dap-ui is unavailable', vim.log.levels.WARN)
+        end,
+        desc = 'debug [u]i',
+      },
     },
   },
 }

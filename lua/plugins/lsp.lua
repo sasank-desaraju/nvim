@@ -44,22 +44,40 @@ return {
     config = function()
       local lspconfig = require("lspconfig")
       local util = require("lspconfig.util")
+      local has_native_lsp_config = vim.fn.has("nvim-0.11") == 1 and vim.lsp.config ~= nil and vim.lsp.enable ~= nil
 
-      require("mason").setup({ PATH = "prepend"})
-      require("mason-lspconfig").setup({
-        -- automatic_enable = false,
-        -- automatic_installation = true,
-      })
+      local function setup_server(name, config)
+        if has_native_lsp_config then
+          vim.lsp.config(name, config)
+          vim.lsp.enable(name)
+          return
+        end
+
+        lspconfig[name].setup(config)
+      end
+
+      local mason_tools = {
+        "pyright",
+        "tree-sitter-cli",
+        "jupytext",
+      }
+
+      -- Initialize Mason at startup so :Mason is an exact command and its
+      -- package binaries are available to LSP clients.
+      require("mason").setup({ PATH = "prepend" })
+      require("mason-lspconfig").setup()
       require("mason-tool-installer").setup({
-        ensure_installed = {
-          "black",
-          "stylua",
-          "shfmt",
-          "isort",
-          "tree-sitter-cli",
-          "jupytext",
-        },
+        ensure_installed = mason_tools,
       })
+
+      vim.api.nvim_create_user_command('MasonBootstrap', function()
+        require("mason").setup({ PATH = "prepend" })
+        require("mason-lspconfig").setup()
+        require("mason-tool-installer").setup({
+          ensure_installed = mason_tools,
+        })
+        vim.cmd("MasonToolsInstall")
+      end, { desc = 'Install configured Mason tools' })
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -86,7 +104,9 @@ return {
           map("]d", vim.diagnostic.goto_next, "next [d]iagnostic ")
           -- map("<leader>ll", vim.lsp.codelens.run, "[l]ens run")
           map("<leader>lR", vim.lsp.buf.rename, "[l]sp [R]ename")
-          map("<leader>lf", vim.lsp.buf.format, "[l]sp [f]ormat")
+          map("<leader>lf", function()
+            vim.lsp.buf.format({ async = true })
+          end, "[l]sp [f]ormat (manual)")
           map("<leader>lq", vim.diagnostic.setqflist, "[l]sp diagnostic [q]uickfix")
         end,
       })
@@ -95,10 +115,14 @@ return {
         allow_incremental_sync = true,
         debounce_text_changes = 150,
       }
-      vim.lsp.handlers["textDocument/hover"] =
-        vim.lsp.with(vim.lsp.handlers.hover, { border = require("misc.style").border })
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = require("misc.style").border })
+      vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+        config = vim.tbl_deep_extend("force", config or {}, { border = require("misc.style").border })
+        return vim.lsp.handlers.hover(err, result, ctx, config)
+      end
+      vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+        config = vim.tbl_deep_extend("force", config or {}, { border = require("misc.style").border })
+        return vim.lsp.handlers.signature_help(err, result, ctx, config)
+      end
 
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
@@ -108,13 +132,12 @@ return {
       -- $home/.config/marksman/config.toml :
       -- [core]
       -- markdown.file_extensions = ["md", "markdown", "qmd"]
-      vim.lsp.config('marksman', {
+      setup_server('marksman', {
         capabilities = capabilities,
         -- filetypes = { "markdown" },
         root_dir = util.root_pattern(".git", ".marksman.toml"),
         single_file_support = true,
       })
-      vim.lsp.enable('marksman')
 
       -- lspconfig.r_language_server.setup({
       --   capabilities = capabilities,
@@ -195,7 +218,7 @@ return {
       --   table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
       -- end
 
-      vim.lsp.config('lua_ls', {
+      setup_server('lua_ls', {
         capabilities = capabilities,
         flags = lsp_flags,
         settings = {
@@ -221,7 +244,6 @@ return {
           },
         },
       })
-      vim.lsp.enable('lua_ls')
 
       -- lspconfig.julials.setup({
       --   capabilities = capabilities,
@@ -268,24 +290,36 @@ return {
       end
       capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
-      -- TODO: Get PyRight working
-      -- lspconfig.pyright.setup({
-      --   capabilities = capabilities,
-      --   flags = lsp_flags,
-      --   settings = {
-      --     python = {
-      --       analysis = {
-      --         autoSearchPaths = true,
-      --         useLibraryCodeForTypes = true,
-      --         diagnosticMode = "workspace",
-      --       },
-      --     },
-      --   },
-      --   root_dir = function(fname)
-      --     return util.root_pattern(".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(fname)
-      --       or util.path.dirname(fname)
-      --   end,
-      -- })
+      -- Python language server for definitions, hover documentation, completion, and diagnostics.
+      setup_server('pyright', {
+        capabilities = capabilities,
+        flags = lsp_flags,
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "workspace",
+            },
+          },
+        },
+        root_dir = function(fname)
+          return util.root_pattern(".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(fname)
+            or util.path.dirname(fname)
+        end,
+      })
+
+      -- Start Pyright explicitly for Python buffers.  This keeps Python LSP
+      -- startup reliable with Neovim's native LSP configuration API.
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("python-lsp-start", { clear = true }),
+        pattern = "python",
+        callback = function(args)
+          if #vim.lsp.get_clients({ bufnr = args.buf, name = "pyright" }) == 0 then
+            vim.lsp.start(vim.lsp.config.pyright, { bufnr = args.buf })
+          end
+        end,
+      })
     end,
   },
 }
