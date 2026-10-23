@@ -5,3 +5,6 @@ node_modules/*
 pack/*
 package-lock.json
 package.json
+
+# omarchy creates this symlink to its current theme; machine-local
+lua/plugins/theme.lua

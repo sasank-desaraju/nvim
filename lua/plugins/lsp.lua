@@ -44,18 +44,6 @@ return {
     config = function()
       local lspconfig = require("lspconfig")
       local util = require("lspconfig.util")
-      local has_native_lsp_config = vim.fn.has("nvim-0.11") == 1 and vim.lsp.config ~= nil and vim.lsp.enable ~= nil
-
-      local function setup_server(name, config)
-        if has_native_lsp_config then
-          vim.lsp.config(name, config)
-          vim.lsp.enable(name)
-          return
-        end
-
-        lspconfig[name].setup(config)
-      end
-
       local mason_tools = {
         "pyright",
         "jupytext",
@@ -74,14 +62,6 @@ return {
         ensure_installed = vim.list_extend(vim.deepcopy(mason_tools), { "stylua", "shfmt" }),
       })
 
-      vim.api.nvim_create_user_command('MasonBootstrap', function()
-        require("mason").setup({ PATH = "prepend" })
-        require("mason-lspconfig").setup()
-        require("mason-tool-installer").setup({
-          ensure_installed = mason_tools,
-        })
-        vim.cmd("MasonToolsInstall")
-      end, { desc = 'Install configured Mason tools' })
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -136,12 +116,13 @@ return {
       -- $home/.config/marksman/config.toml :
       -- [core]
       -- markdown.file_extensions = ["md", "markdown", "qmd"]
-      setup_server('marksman', {
+      vim.lsp.config('marksman', {
         capabilities = capabilities,
         -- filetypes = { "markdown" },
         root_dir = util.root_pattern(".git", ".marksman.toml"),
         single_file_support = true,
       })
+      vim.lsp.enable('marksman')
 
       -- lspconfig.r_language_server.setup({
       --   capabilities = capabilities,
@@ -222,7 +203,7 @@ return {
       --   table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
       -- end
 
-      setup_server('lua_ls', {
+      vim.lsp.config('lua_ls', {
         capabilities = capabilities,
         flags = lsp_flags,
         settings = {
@@ -248,6 +229,7 @@ return {
           },
         },
       })
+      vim.lsp.enable('lua_ls')
 
       -- lspconfig.julials.setup({
       --   capabilities = capabilities,
@@ -294,26 +276,7 @@ return {
       end
       capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
-      -- Python language server for definitions, hover documentation, completion, and diagnostics.
-      setup_server('pyright', {
-        capabilities = capabilities,
-        flags = lsp_flags,
-        settings = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-              diagnosticMode = "workspace",
-            },
-          },
-        },
-        -- Neovim 0.11+ native config passes (bufnr, on_dir), not a filename.
-        root_dir = function(bufnr, on_dir)
-          local fname = vim.api.nvim_buf_get_name(bufnr)
-          on_dir(vim.fs.root(bufnr, { ".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt" })
-            or vim.fs.dirname(fname))
-        end,
-      })
+      -- pyright is configured by the LazyVim python extra (lazyvim.json).
 
     end,
   },
