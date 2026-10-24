@@ -430,7 +430,12 @@ wk.add({
     { "<leader>oO", ":ObsidianOpen<cr>", desc = "obsidian [O]pen in app" },
     -- { "<c-l>", ":ObsidianToggleCheckbox<cr>", desc = "Toggle checkbox" },
     { "<leader>q", group = "[q]uarto" },
-    { "<leader>qp", ":lua require'quarto'.quartoPreview()<cr>", desc = "[p]review file" },
+    { "<leader>qp", function()
+        -- fixed port so hpg-forward (which tunnels 4321) always works
+        local a = "--port 4321"
+        if vim.env.SSH_CONNECTION then a = a .. " --no-browser" end
+        require("quarto").quartoPreview({ args = a })
+      end, desc = "[p]review file" },
     { "<leader>qP", ":!quarto preview<cr>", desc = "[P]review project" },
     { "<leader>qr", ":!quarto render<cr>", desc = "[r]ender project" },
     { "<leader>qq", ":lua require'quarto'.quartoClosePreview()<cr>", desc = "[q]uit preview" },
