@@ -2,6 +2,7 @@
 -- :QmdCodeShade        toggle darker background on ```{python}``` chunks and `{python} ...` spans
 -- :QmdNumbers          toggle (per buffer) virtual text with the value of each inline `{python} expr`
 -- :QmdNumbersConceal   toggle (per buffer) hiding the inline code so only the value shows
+--                      (the cursor line still shows its code, like Obsidian live preview)
 
 local M = {}
 
@@ -133,9 +134,15 @@ function M.render(buf)
   vim.api.nvim_buf_clear_namespace(buf, NS_NUM, 0, -1)
   if not st or not st.numbers or not st.items then return end
   local nlines = vim.api.nvim_buf_line_count(buf)
+  -- Obsidian-style: the line under the cursor shows its code; other lines show only values
+  local cur_row = -1
+  if vim.api.nvim_get_current_buf() == buf then
+    cur_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+  end
+  st.rendered_row = cur_row
   for _, it in ipairs(st.items) do
     if it.line < nlines then
-      local conceal = st.conceal and it.value ~= nil
+      local conceal = st.conceal and it.value ~= nil and it.line ~= cur_row
       local text, hl
       if it.value ~= nil then
         text, hl = (conceal and "" or " ") .. it.value, "QmdNumberValue"
@@ -254,6 +261,15 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
   group = grp, pattern = "*.qmd",
   callback = function(ev) shade_debounced(ev.buf) end,
+})
+vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+  group = grp, pattern = "*.qmd",
+  callback = function(ev)
+    local st = M.state[ev.buf]
+    if not st or not st.conceal or not st.items then return end
+    local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+    if row ~= st.rendered_row then M.render(ev.buf) end
+  end,
 })
 vim.api.nvim_create_autocmd("BufWipeout", {
   group = grp, pattern = "*.qmd",
