@@ -6,11 +6,11 @@ local NS = vim.api.nvim_create_namespace("ProseSyntax")
 -- User request: Nouns = Red, Verbs = Blue
 local POS_COLORS = {
   NOUN  = { group = "ProseSyntax_NOUN",  hex = "#FF3B30" }, -- Red
-  VERB  = { group = "ProseSyntax_VERB",  hex = "#3A86FF" }, -- Blue
+  VERB  = { group = "ProseSyntax_VERB",  hex = "#FFD166" }, -- Yellow
   
   -- Supplementary colors
-  ADJ   = { group = "ProseSyntax_ADJ",   hex = "#FFD166" }, -- Yellow
-  ADV   = { group = "ProseSyntax_ADV",   hex = "#06D6A0" }, -- Green
+  ADJ   = { group = "ProseSyntax_ADJ",   hex = "#3A86FF" }, -- Blue
+  ADV   = { group = "ProseSyntax_ADV",   hex = "#1F5FCC" }, -- Darker Blue
   PRON  = { group = "ProseSyntax_PRON",  hex = "#FF7B00" }, -- Orange
   -- DET   = { group = "ProseSyntax_DET",   hex = "#B56576" }, -- Rose
   -- ADP   = { group = "ProseSyntax_ADP",   hex = "#118AB2" }, -- Teal
@@ -21,7 +21,7 @@ local POS_COLORS = {
   PART  = { group = "ProseSyntax_PART",  hex = "#2EC4B6" }, -- Cyan
   INTJ  = { group = "ProseSyntax_INTJ",  hex = "#F15BB5" }, -- Pink
   -- PROPN = { group = "ProseSyntax_PROPN", hex = "#8338EC" }, -- Violet (Proper Noun)
-  AUX   = { group = "ProseSyntax_AUX",   hex = "#3A86FF" }, -- Blue (Auxiliary Verb, same as Verb)
+  AUX   = { group = "ProseSyntax_AUX",   hex = "#FFD166" }, -- Yellow (Auxiliary Verb, same as Verb)
   
   -- Less emphasized
   PUNCT = { group = "ProseSyntax_PUNCT", hex = "#555555" }, -- Grey
