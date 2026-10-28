@@ -137,6 +137,40 @@ local function run_spacy_job(text, callback)
   vim.fn.chanclose(job_id, "stdin")
 end
 
+-- Code regions to leave uncolored: fenced chunks (whole lines) and inline `...` spans.
+-- mask[lnum0] = true for a whole line, or a list of {start, end} byte columns (0-based, end exclusive).
+local function code_mask(lines)
+  local mask, in_fence = {}, false
+  for i, l in ipairs(lines) do
+    if l:match("^%s*```") or l:match("^%s*~~~") then
+      mask[i - 1] = true
+      in_fence = not in_fence
+    elseif in_fence then
+      mask[i - 1] = true
+    else
+      local spans, pos = {}, 1
+      while true do
+        local s, e = l:find("`[^`]*`", pos)
+        if not s then break end
+        spans[#spans + 1] = { s - 1, e }
+        pos = e + 1
+      end
+      if #spans > 0 then mask[i - 1] = spans end
+    end
+  end
+  return mask
+end
+
+local function masked(mask, l, c1, c2)
+  local m = mask[l]
+  if not m then return false end
+  if m == true then return true end
+  for _, r in ipairs(m) do
+    if c1 < r[2] and c2 > r[1] then return true end
+  end
+  return false
+end
+
 function M.clear()
   vim.api.nvim_buf_clear_namespace(0, NS, 0, -1)
   local bufnr = vim.api.nvim_get_current_buf()
@@ -164,6 +198,7 @@ function M.highlight()
 
   -- Pre-calculate offsets for THIS text version
   local line_offs = build_line_offsets(lines)
+  local mask = code_mask(lines)
   local changedtick_start = vim.api.nvim_buf_get_changedtick(bufnr)
   
   vim.notify("ProseSyntax: Analyzing (async)...", vim.log.levels.INFO)
@@ -205,7 +240,7 @@ function M.highlight()
         local l1, c1, l2, c2 = charspan_to_lc(s.start, s["end"], line_offs, lines)
         
         -- Ensure we don't go out of bounds (using the captured 'lines')
-        if lines[l1 + 1] then
+        if lines[l1 + 1] and not masked(mask, l1, c1, (l1 == l2) and c2 or #lines[l1 + 1]) then
           if l1 == l2 then
             vim.hl.range(bufnr, NS, cfg.group, { l1, c1 }, { l1, c2 })
           else

@@ -105,6 +105,40 @@ local function ensure_hlgroups()
   vim.api.nvim_set_hl(0, "ProseNth_PunctBG", { bg = PUNCT_BG, bold = PUNCT_BOLD })
 end
 
+-- Code regions to leave uncolored: fenced chunks (whole lines) and inline `...` spans.
+-- mask[lnum0] = true for a whole line, or a list of {start, end} byte columns (0-based, end exclusive).
+local function code_mask(lines)
+  local mask, in_fence = {}, false
+  for i, l in ipairs(lines) do
+    if l:match("^%s*```") or l:match("^%s*~~~") then
+      mask[i - 1] = true
+      in_fence = not in_fence
+    elseif in_fence then
+      mask[i - 1] = true
+    else
+      local spans, pos = {}, 1
+      while true do
+        local s, e = l:find("`[^`]*`", pos)
+        if not s then break end
+        spans[#spans + 1] = { s - 1, e }
+        pos = e + 1
+      end
+      if #spans > 0 then mask[i - 1] = spans end
+    end
+  end
+  return mask
+end
+
+local function masked(mask, l, c1, c2)
+  local m = mask[l]
+  if not m then return false end
+  if m == true then return true end
+  for _, r in ipairs(m) do
+    if c1 < r[2] and c2 > r[1] then return true end
+  end
+  return false
+end
+
 function M.clear()
   vim.api.nvim_buf_clear_namespace(0, NS_WORD,  0, -1)
   vim.api.nvim_buf_clear_namespace(0, NS_PUNCT, 0, -1)
@@ -135,6 +169,7 @@ function M.highlight(n)
 
   local word_idx = 0
   local palette_len = #PALETTE
+  local mask = code_mask(lines)
 
   for lnum, line in ipairs(lines) do
     -- Pass 1: every Nth word (ASCII word chars; tweak pattern if you want hyphens/apostrophes inside words)
@@ -142,8 +177,9 @@ function M.highlight(n)
     while true do
       local wstart, wend = string.find(line, "%w+", e)
       if not wstart then break end
-      word_idx = word_idx + 1
-      if (word_idx % n) == 0 then
+      local skip = masked(mask, lnum - 1, wstart - 1, wend)
+      if not skip then word_idx = word_idx + 1 end
+      if not skip and (word_idx % n) == 0 then
         local color_idx = ((word_idx / n - 1) % palette_len) + 1
         local group = ("ProseNth_%d"):format(color_idx)
         vim.hl.range(buf, NS_WORD, group, { lnum - 1, wstart - 1 }, { lnum - 1, wend })
@@ -160,7 +196,7 @@ function M.highlight(n)
       while true do
         local s = string.find(line, pat, pos)
         if not s then break end
-        if not seen[s] then
+        if not seen[s] and not masked(mask, lnum - 1, s - 1, s) then
           -- s is 1-based byte index of the char; end column is exclusive
           vim.hl.range(buf, NS_PUNCT, "ProseNth_PunctBG", { lnum - 1, s - 1 }, { lnum - 1, s })
           seen[s] = true
