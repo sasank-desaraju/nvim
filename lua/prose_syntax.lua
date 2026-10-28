@@ -20,7 +20,7 @@ local POS_COLORS = {
   SCONJ = { group = "ProseSyntax_SCONJ", hex = "#9B5DE5" }, -- Purple
   PART  = { group = "ProseSyntax_PART",  hex = "#2EC4B6" }, -- Cyan
   INTJ  = { group = "ProseSyntax_INTJ",  hex = "#F15BB5" }, -- Pink
-  PROPN = { group = "ProseSyntax_PROPN", hex = "#8338EC" }, -- Violet (Proper Noun)
+  -- PROPN = { group = "ProseSyntax_PROPN", hex = "#8338EC" }, -- Violet (Proper Noun)
   AUX   = { group = "ProseSyntax_AUX",   hex = "#3A86FF" }, -- Blue (Auxiliary Verb, same as Verb)
   
   -- Less emphasized
