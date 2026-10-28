@@ -18,10 +18,11 @@ require 'config.autocommands'
 -- Prose Tools (Uncomment to enable if they are working)
 require 'prose_nth_highlight'
 require 'prose_syntax'
+require 'qmd_overlay'
 
 -- :ProseReload re-sources the prose modules without restarting nvim
 vim.api.nvim_create_user_command("ProseReload", function()
-  for _, m in ipairs({ "prose_nth_highlight", "prose_syntax" }) do
+  for _, m in ipairs({ "prose_nth_highlight", "prose_syntax", "qmd_overlay" }) do
     package.loaded[m] = nil
     require(m)
   end
