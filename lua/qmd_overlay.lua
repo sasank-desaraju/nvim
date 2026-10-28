@@ -12,6 +12,8 @@ local NS_NUM   = vim.api.nvim_create_namespace("QmdNumbers")
 local DARKEN        = 0.78        -- multiply Normal bg channels by this (~22% darker)
 local FALLBACK_BG   = "#16161e"   -- used when Normal has no bg (transparent themes)
 local SHADE_PRIO    = 10          -- low, so prose highlighters (default 4096) draw on top
+local CODE_FG       = "#8a8a8a"   -- grey text for code, overriding treesitter colors
+local CODE_FG_PRIO  = 200         -- above treesitter (100)
 local DEBOUNCE_MS   = 200
 local HELPER_TIMEOUT_MS = 180000
 local SCRIPT = vim.fn.stdpath("config") .. "/scripts/qmd_inline_eval.py"
@@ -36,6 +38,7 @@ local function ensure_hlgroups()
   local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
   local bg = normal.bg and darken(normal.bg, DARKEN) or FALLBACK_BG
   vim.api.nvim_set_hl(0, "QmdCodeShade", { bg = bg })
+  vim.api.nvim_set_hl(0, "QmdCodeFg", { fg = CODE_FG })
   vim.api.nvim_set_hl(0, "QmdNumberValue", { link = "Comment", default = true })
   vim.api.nvim_set_hl(0, "QmdNumberError", { link = "DiagnosticError", default = true })
 end
@@ -57,6 +60,10 @@ function M.shade(buf)
     if in_chunk then
       vim.api.nvim_buf_set_extmark(buf, NS_SHADE, row, 0,
         { line_hl_group = "QmdCodeShade", priority = SHADE_PRIO })
+      if #l > 0 then
+        vim.api.nvim_buf_set_extmark(buf, NS_SHADE, row, 0,
+          { end_col = #l, hl_group = "QmdCodeFg", priority = CODE_FG_PRIO })
+      end
       if l:match("^%s*```+%s*$") then in_chunk = false end
     else
       local init = 1
@@ -65,6 +72,8 @@ function M.shade(buf)
         if not s then break end
         vim.api.nvim_buf_set_extmark(buf, NS_SHADE, row, s - 1,
           { end_col = e, hl_group = "QmdCodeShade", priority = SHADE_PRIO })
+        vim.api.nvim_buf_set_extmark(buf, NS_SHADE, row, s - 1,
+          { end_col = e, hl_group = "QmdCodeFg", priority = CODE_FG_PRIO })
         init = e + 1
       end
     end
