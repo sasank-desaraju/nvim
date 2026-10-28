@@ -86,11 +86,16 @@ local function run_spacy_job(text, callback)
     "    sys.stdout.write(json.dumps({'error': 'model en_core_web_sm not found'}))",
     "    sys.exit(1)",
     "",
-    "doc = nlp(sys.stdin.read())",
+    "text = sys.stdin.buffer.read().decode('utf-8', 'surrogateescape')",
+    "doc = nlp(text)",
+    "# spaCy gives character offsets; Neovim columns are bytes, so convert (fixes drift after non-ASCII chars)",
+    "b = [0]",
+    "for ch in text:",
+    "    b.append(b[-1] + len(ch.encode('utf-8', 'surrogateescape')))",
     "out = []",
     "for tok in doc:",
     "    pos = tok.pos_ or 'X'",
-    "    out.append({'start': int(tok.idx), 'end': int(tok.idx + len(tok)), 'pos': pos})",
+    "    out.append({'start': b[tok.idx], 'end': b[tok.idx + len(tok)], 'pos': pos})",
     "sys.stdout.write(json.dumps({'spans': out}))",
   }, "\n")
 
