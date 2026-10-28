@@ -258,10 +258,8 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
   group = grp, pattern = "*.qmd",
   callback = function(ev) M.shade(ev.buf) end,
 })
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-  group = grp, pattern = "*.qmd",
-  callback = function(ev) shade_debounced(ev.buf) end,
-})
+-- Shading refreshes only on BufEnter/BufWritePost (not while typing) to avoid input lag;
+-- extmarks follow edits in between, so new chunks get shaded on the next save.
 vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
   group = grp, pattern = "*.qmd",
   callback = function(ev)
