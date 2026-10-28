@@ -146,7 +146,7 @@ function M.highlight(n)
       if (word_idx % n) == 0 then
         local color_idx = ((word_idx / n - 1) % palette_len) + 1
         local group = ("ProseNth_%d"):format(color_idx)
-        vim.api.nvim_buf_add_highlight(buf, NS_WORD, group, lnum - 1, wstart - 1, wend)
+        vim.hl.range(buf, NS_WORD, group, { lnum - 1, wstart - 1 }, { lnum - 1, wend })
       end
       e = wend + 1
     end
@@ -162,7 +162,7 @@ function M.highlight(n)
         if not s then break end
         if not seen[s] then
           -- s is 1-based byte index of the char; end column is exclusive
-          vim.api.nvim_buf_add_highlight(buf, NS_PUNCT, "ProseNth_PunctBG", lnum - 1, s - 1, s)
+          vim.hl.range(buf, NS_PUNCT, "ProseNth_PunctBG", { lnum - 1, s - 1 }, { lnum - 1, s })
           seen[s] = true
         end
         pos = s + 1

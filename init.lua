@@ -18,3 +18,12 @@ require 'config.autocommands'
 -- Prose Tools (Uncomment to enable if they are working)
 require 'prose_nth_highlight'
 require 'prose_syntax'
+
+-- :ProseReload re-sources the prose modules without restarting nvim
+vim.api.nvim_create_user_command("ProseReload", function()
+  for _, m in ipairs({ "prose_nth_highlight", "prose_syntax" }) do
+    package.loaded[m] = nil
+    require(m)
+  end
+  vim.notify("Prose modules reloaded")
+end, {})

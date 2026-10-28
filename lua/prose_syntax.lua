@@ -98,7 +98,7 @@ local function run_spacy_job(text, callback)
     "env", "PYTHONPATH=",
     "uv", "run",
     "--with", "spacy",
-    "--with", "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl",
+    "--with", "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
     "python", "-c", py
   }
 
@@ -207,9 +207,9 @@ function M.highlight()
         -- Ensure we don't go out of bounds (using the captured 'lines')
         if lines[l1 + 1] then
           if l1 == l2 then
-            vim.api.nvim_buf_add_highlight(bufnr, NS, cfg.group, l1, c1, c2)
+            vim.hl.range(bufnr, NS, cfg.group, { l1, c1 }, { l1, c2 })
           else
-            vim.api.nvim_buf_add_highlight(bufnr, NS, cfg.group, l1, c1, #lines[l1 + 1])
+            vim.hl.range(bufnr, NS, cfg.group, { l1, c1 }, { l1, #lines[l1 + 1] })
           end
         end
       end
