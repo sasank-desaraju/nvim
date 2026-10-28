@@ -26,7 +26,7 @@ local POS_COLORS = {
   -- Less emphasized
   PUNCT = { group = "ProseSyntax_PUNCT", hex = "#555555" }, -- Grey
   SYM   = { group = "ProseSyntax_SYM",   hex = "#90A955" }, -- Sage
-  X     = { group = "ProseSyntax_X",     hex = "#999999" }, -- Unknown
+  -- X     = { group = "ProseSyntax_X",     hex = "#999999" }, -- Unknown
 }
 
 local function ensure_hlgroups()
